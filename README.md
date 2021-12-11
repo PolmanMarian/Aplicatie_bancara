@@ -24,8 +24,8 @@ angajații vad o lista cu operațiunile care trebuie autorizate de ei.
 
 
 **Admin**
-Adminul poate efectua plata unor salarii specificând suma, un cont sursa si o lista de IBAN-uri destinatie.
+1) Adminul poate efectua plata unor salarii specificând suma, un cont sursa si o lista de IBAN-uri destinatie.
 
-** Comisioane si dobanzi **
+**Comisioane si dobanzi**
 1) Toate comisioanele, dobanzile si posibilele taxe sau praguri sunt setate din interfata de catre admin. De exemplu, pentru conturile de economii se scade o scade un comision de 2% cand este lichidat si se adauga o dobanda de 5% cand este creat. De asemenea exista depozite de 1, 3 si 6 luni pentru care se adauga o dobanda de 5%, 10% respective 15% cand se indeplineste perioada pentru care a fost facut depozitul. Clientul isi poate lichida depozitul, caz in care acesata este sters si banii sunt adaugati in contul current. Daca suma introdusa in depozit este mai mare de 500000 lei, un angajat trebuie sa aprobe deschiderea depozitului, iar un admin lichidarea lui.
 
