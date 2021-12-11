@@ -1,3 +1,4 @@
+drop schema Aplicatie_bancara;
 create schema if not exists Aplicatie_bancara;
 use Aplicatie_bancara;
 
@@ -20,13 +21,34 @@ create table if not exists `users`(
     `prenume` varchar(20) not null,
     `adresa` varchar(30) not null,
     `numar_de_telefon` varchar(10) not null,
-    `iban` char(24) not null,
     `numar_de_contract` integer,
     `rank` integer not null default 1,
-    constraint fk_user_rank foreign key (`rank`) references user_rank (id)
+    constraint fk_user_rank foreign key (`rank`) references user_rank (id),
+    primary key (`cnp`)
+);
+
+create table if not exists `clienti` (
+    `data_nasterii` date not null,
+    `adresa` varchar(30) not null,
+    `sursa_principala_de_venit` varchar(30) not null,
+    `tranzactii_online` boolean,
+    `cnp` char(13) not null,
+    constraint fk_cnp_user_clienti foreign key (`cnp`) references users(`cnp`),
+    primary key(`cnp`)
+);
+
+create table if not exists `cont_bancar` (
+    `suma` integer not null,
+    `curent_economii` boolean,
+    `iban` char(24) not null,
+    primary key (`iban`)
+);
+
+create table if not exists `relatie_client_cont` (
+    `iban` char(24) not null,
+    `cnp` char(13) not null,
+    constraint fk_cnp_user_relatie foreign key (`cnp`) references users(`cnp`),
+    constraint fk_iban_cont_bancar_relatie foreign key (`iban`) references cont_bancar(`iban`)
 );
 
 
-insert into users (username, password, cnp, nume, prenume, adresa, numar_de_telefon, iban, numar_de_contract)
-value ('andrei' , 'parola' , '1234567891234' , 'Nedelcu' , 'Andrei'
-, 'Strada Strazilor Nr.4' , '0755648332' , 'RO49AAAA1B31007593840000' , 12);
