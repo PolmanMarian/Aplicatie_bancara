@@ -23,3 +23,4 @@ create table if not exists `users`(
     `rank` integer not null default 1,
     constraint fk_user_rank foreign key (`rank`) references user_rank (id)
 );
+
