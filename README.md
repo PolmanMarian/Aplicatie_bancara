@@ -1,6 +1,6 @@
 # Detalii legate de implementari
 
-** Client **
+**Client**
 1) Un client nu poate avea mai mult de 5 conturi
 2) Clientul poate solicita eliberarea unui card si trebuie aprobata de admin si de un angajat
 3) Clientul poate face transferuri bancare intre catre alti client, caz in care trebuie sa menționeze numele titularului
@@ -15,7 +15,7 @@ IBAN-ul.
 facturii. Se va genera o factura cu detaliile tranzacției.
 
 
-** Angajati **
+**Angajati**
 1) Angajații pot sa vada toate tranzacțiile si sa extraga rapoarte despre statusul lor (filtrate după data, status, angajat
 responsabil sau client). De asemenea, pot sa vadă toate conturile unui client.
 
@@ -23,10 +23,9 @@ responsabil sau client). De asemenea, pot sa vadă toate conturile unui client.
 angajații vad o lista cu operațiunile care trebuie autorizate de ei.
 
 
-** Admin **
+**Admin**
 Adminul poate efectua plata unor salarii specificând suma, un cont sursa si o lista de IBAN-uri destinatie.
 
 ** Comisioane si dobanzi **
 1) Toate comisioanele, dobanzile si posibilele taxe sau praguri sunt setate din interfata de catre admin. De exemplu, pentru conturile de economii se scade o scade un comision de 2% cand este lichidat si se adauga o dobanda de 5% cand este creat. De asemenea exista depozite de 1, 3 si 6 luni pentru care se adauga o dobanda de 5%, 10% respective 15% cand se indeplineste perioada pentru care a fost facut depozitul. Clientul isi poate lichida depozitul, caz in care acesata este sters si banii sunt adaugati in contul current. Daca suma introdusa in depozit este mai mare de 500000 lei, un angajat trebuie sa aprobe deschiderea depozitului, iar un admin lichidarea lui.
 
-2)
