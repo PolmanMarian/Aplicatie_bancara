@@ -23,7 +23,7 @@ create table if not exists `users`(
     `numar_de_telefon` varchar(10) not null,
     `numar_de_contract` integer,
     `rank` integer not null default 1,
-    constraint fk_user_rank foreign key (`rank`) references user_rank (id),
+    constraint fk_user_rank foreign key (`rank`) references user_rank(id),
     primary key (`cnp`)
 );
 
@@ -52,3 +52,36 @@ create table if not exists `relatie_client_cont` (
 );
 
 
+create table if not exists `nume_departamente` (
+    `id` integer not null,
+    `nume` varchar(15) not null unique,
+    primary key (`id`)
+);
+
+insert into `nume_departamente` (id, nume)
+value
+    (1 , 'HR'),
+    (2 , 'IT'),
+    (3 , 'Functionar');
+
+create table if not exists `departament` (
+    `nume_departament` integer not null,
+    constraint fk_nume_departament foreign key (`nume_departament`) references nume_departamente(`id`)
+);
+
+create table if not exists `permisiuni_departament` (
+    -- 0 = nu
+    -- 1 = nunt
+    -- 2 = Doar persoane si clienti
+    `nume_departament` integer not null,
+    constraint fk_nume_deparament_permisiuni foreign key (`nume_departament`) references nume_departamente(`id`),
+    `activitati_bancare` integer,
+    `modificare_baza_de_date` integer,
+    `activitati_legate_de_utilizatori` integer
+);
+
+insert into `permisiuni_departament` (nume_departament, activitati_bancare, modificare_baza_de_date, activitati_legate_de_utilizatori)
+value
+    (1 , 0 , 0 , 1),
+    (2 , 0 , 1 , 0),
+    (3 , 1 , 0 , 2);
