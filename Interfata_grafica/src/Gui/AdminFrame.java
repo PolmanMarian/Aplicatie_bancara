@@ -1,3 +1,5 @@
+package Gui;
+
 import javax.swing.*;
 
 public class AdminFrame extends JFrame {

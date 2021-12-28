@@ -1,3 +1,4 @@
+package Gui;
 import javax.swing.*;
 
 public class AngajatFrame extends JFrame{
