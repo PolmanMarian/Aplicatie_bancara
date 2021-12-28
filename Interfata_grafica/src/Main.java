@@ -15,19 +15,19 @@ public class Main {
     }
 
     public static void main(String ... argc) {
-        Connection c;
-        try {
-            c = DriverManager.getConnection(URL + DB_NAME , USER , PASSWORD);
-            PreparedStatement s = c.prepareStatement("select * from user_rank");
-            ResultSet rez = s.executeQuery();
-            while(rez.next()) {
-                System.out.println("Rank " + rez.getString("rank"));
-            }
-        } catch ( Exception e ) {
-            System.out.println("Nu -i bine!");
-            System.out.println("SQLState: " + ((SQLException) e).getSQLState());
-            System.out.println("VendorError: " + ((SQLException) e).getErrorCode());
-        }
-        //changeCurrentFrame(new MainFrame("Aplicatie Bancara"));
+//        Connection c;
+//        try {
+//            c = DriverManager.getConnection(URL + DB_NAME , USER , PASSWORD);
+//            PreparedStatement s = c.prepareStatement("select * from user_rank");
+//            ResultSet rez = s.executeQuery();
+//            while(rez.next()) {
+//                System.out.println("Rank " + rez.getString("rank"));
+//            }
+//        } catch ( Exception e ) {
+//            System.out.println("Nu -i bine!");
+//            System.out.println("SQLState: " + ((SQLException) e).getSQLState());
+//            System.out.println("VendorError: " + ((SQLException) e).getErrorCode());
+//        }
+        changeCurrentFrame(new MainFrame("Aplicatie Bancara"));
     }
 }
