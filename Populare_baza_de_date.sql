@@ -7,5 +7,8 @@ value
     ('angajat' , 'angajat' ,'6211210123001' , 'Coste' , 'Andrei' , 'Sub celalalt pod' , '0733435345' , 13 , 2);
 
 select users.`rank` from users where
-`username` = 'Polman Marian' and
+`username` = 'root' and
 `password` = 'root';
+
+select * from users where
+`username` = 'root' and `password` = 'root';
