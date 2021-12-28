@@ -4,7 +4,6 @@ public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
     private JButton logutButton;
-    private JList list1;
 
     public ClientFrame(String title) {
         super(title);

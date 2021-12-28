@@ -27,4 +27,23 @@ public class AppService {
         JOptionPane.showMessageDialog(frame , "Eroare la logare" , "Login error" ,
                 JOptionPane.INFORMATION_MESSAGE);
     }
+
+    public static void printUserInfo(String username , String password) {
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
