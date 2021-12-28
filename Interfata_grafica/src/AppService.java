@@ -23,12 +23,8 @@ public class AppService {
         return ret;
     }
 
-
     public static void failedLogin(JFrame frame) {
-        JDialog d = new JDialog(frame , "Failed Login");
-        JLabel l = new JLabel("Error");
-        d.add(l);
-        d.setSize(100 , 100);
-        d.setVisible(true);
+        JOptionPane.showMessageDialog(frame , "Eroare la logare" , "Login error" ,
+                JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class MainFrame extends JFrame {
     private JPasswordField userName;
@@ -6,22 +9,20 @@ public class MainFrame extends JFrame {
     private JButton loginButton;
     private JButton resetButton;
     private JPanel mainPanel;
-    private JTextField userNameTextField;
-    private JTextField passwordTextField;
 
     public MainFrame(String title) {
         super(title);
+        JFrame.setDefaultLookAndFeelDecorated(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1080 , 720);
         this.setContentPane(mainPanel);
-        this.userNameTextField.setText("Username");
-        this.passwordTextField.setText("Password");
         this.userName.setEchoChar((char)0);
         this.pack();
 
         resetButton.addActionListener(e -> {
             userName.setText("");
             password.setText("");
+            userName.requestFocus();
         });
 
         loginButton.addActionListener(e -> {
@@ -49,6 +50,25 @@ public class MainFrame extends JFrame {
                 }
                 default: {
                     AppService.failedLogin(Main.currentFrame);
+                }
+            }
+        });
+        password.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                var pressedKey = e.getKeyChar();
+                if (pressedKey == KeyEvent.VK_ENTER) {
+                    loginButton.doClick(12);
+                }
+            }
+        });
+        userName.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    password.requestFocus();
                 }
             }
         });
