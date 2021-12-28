@@ -7,6 +7,8 @@ public class Main {
     private final static String DB_NAME = "Aplicatie_bancara";
     private final static String USER = "root";
     private final static String PASSWORD = "fronemaneroot";
+    public static Connection c;
+
 
     public static JFrame currentFrame;
     public static void changeCurrentFrame(JFrame newFrame){
@@ -15,19 +17,18 @@ public class Main {
     }
 
     public static void main(String ... argc) {
-//        Connection c;
-//        try {
-//            c = DriverManager.getConnection(URL + DB_NAME , USER , PASSWORD);
+        try {
+            c = DriverManager.getConnection(URL + DB_NAME , USER , PASSWORD);
 //            PreparedStatement s = c.prepareStatement("select * from user_rank");
 //            ResultSet rez = s.executeQuery();
 //            while(rez.next()) {
 //                System.out.println("Rank " + rez.getString("rank"));
 //            }
-//        } catch ( Exception e ) {
-//            System.out.println("Nu -i bine!");
-//            System.out.println("SQLState: " + ((SQLException) e).getSQLState());
-//            System.out.println("VendorError: " + ((SQLException) e).getErrorCode());
-//        }
+        } catch ( Exception e ) {
+            System.out.println("Nu -i bine!");
+            System.out.println("SQLState: " + ((SQLException) e).getSQLState());
+            System.out.println("VendorError: " + ((SQLException) e).getErrorCode());
+        }
         changeCurrentFrame(new MainFrame("Aplicatie Bancara"));
     }
 }

@@ -27,13 +27,29 @@ public class MainFrame extends JFrame {
         loginButton.addActionListener(e -> {
             String usern = String.valueOf(userName.getPassword());
             String passw = String.valueOf(password.getPassword());
-            boolean validate = AppService.checkAccount(usern , passw);
-            if (!validate) {
-                AppService.failedLogin(Main.currentFrame);
-            } else {
-                Main.currentFrame.setVisible(false);
-                Main.currentFrame.dispose();
-                Main.changeCurrentFrame(new AngajatFrame("Angajat"));
+            int validate = AppService.checkAccount(usern , passw);
+            switch (validate) {
+                case 1: {
+                    Main.currentFrame.setVisible(false);
+                    Main.currentFrame.dispose();
+                    Main.changeCurrentFrame(new ClientFrame("Client"));
+                    break;
+                }
+                case 2: {
+                    Main.currentFrame.setVisible(false);
+                    Main.currentFrame.dispose();
+                    Main.changeCurrentFrame(new AngajatFrame("Angajat"));
+                    break;
+                }
+                case 3: {
+                    Main.currentFrame.setVisible(false);
+                    Main.currentFrame.dispose();
+                    Main.changeCurrentFrame(new AdminFrame("Admin"));
+                    break;
+                }
+                default: {
+                    AppService.failedLogin(Main.currentFrame);
+                }
             }
         });
     }
