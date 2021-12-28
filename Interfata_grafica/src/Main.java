@@ -1,6 +1,7 @@
 import javax.swing.*;
 
 public class Main {
+    /// urmeaza sa facem conexiunea
     public static JFrame currentFrame;
     public static void changeCurrentFrame(JFrame newFrame){
         currentFrame = newFrame;
