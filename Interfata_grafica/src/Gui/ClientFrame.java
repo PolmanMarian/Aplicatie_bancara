@@ -26,6 +26,7 @@ public class ClientFrame extends JFrame{
     private JButton solicitareCardBancarButton;
     private JButton deschidereContButton;
     private JButton lichidareContButton;
+    private JTable tranzactii;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
 

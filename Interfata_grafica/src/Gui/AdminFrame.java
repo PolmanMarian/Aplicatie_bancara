@@ -3,7 +3,7 @@ package Gui;
 import javax.swing.*;
 
 public class AdminFrame extends JFrame {
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane administrare; /// aici se vor executa diferite actiuni
     private JPanel panel1;
     private JButton logoutButton;
 

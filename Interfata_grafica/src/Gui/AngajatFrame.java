@@ -5,6 +5,9 @@ public class AngajatFrame extends JFrame{
     private JTabbedPane tabbedPane1;
     private JPanel panel1;
     private JButton logoutButton;
+    private JTable tranzactiiInAsteptare;
+    private JTable DepoziteInAsteptare;
+    private JTable vizualizareClienti;
 
     public AngajatFrame(String title) {
         super(title);
