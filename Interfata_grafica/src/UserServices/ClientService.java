@@ -5,6 +5,7 @@ import Gui.Main;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,7 +43,22 @@ public class ClientService {
 
     public static boolean permisiuneDeschidereCont() {
         /// verificare daca clientul are deja 5 conturi
-        return true;
+        String SQL = "CALL getAccountCount(?)";
+        int ret = -1;
+        ResultSet rs;
+        try {
+            CallableStatement cnt = Main.c.prepareCall(SQL);
+            cnt.setString(1 , personalData.cnp);
+            rs = cnt.executeQuery();
+            if(rs.next()) {
+                ret = rs.getInt(1);
+            }
+            if(ret < 5) return true;
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static DefaultTableModel dataModelConturiBancare() {

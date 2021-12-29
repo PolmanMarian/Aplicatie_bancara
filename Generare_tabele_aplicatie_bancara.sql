@@ -1,29 +1,6 @@
-/*
-    Toate comisionele, dobanzile si posibilele taxe sau praguri sunt setate din interfata de catre admin. De exemplu,
-pentru conturile de economii se scade o scade un comision de 2% cand este lichidat si se adauga o dobanda de
-5% cand este creat. De asemenea exista depozite de 1, 3 si 6 luni pentru care se adauga o dobanda de 5%, 10%
-respective 15% cand se indeplineste perioada pentru care a fost facut depozitul. Clientul isi poate lichida depozitul,
-caz in care acesata este sters si banii sunt adaugati in contul current. Daca suma introdusa in depozit este mai mare
-de 500000 lei, un angajat trebuie sa aprobe deschiderea depozitului, iar un admin lichidarea lui.
-*/
-
-/*
-    Clientul poate solicita eliberarea unui card, care va fi conectat la contul curent, iar cererea sa trebuie sa fie aprobata
-de un admin si de un angajat.
-*/
-
-/*
-    Clientul poate face transferuri bancare intre catre alti client, caz in care trebuie sa menționeze numele titularului
-contului si IBAN-ul. Transferul intre conturi are status de “CREATED” cand este inițiat de client si se realizează
-doar când este aprobat de un angajat, atunci banii sunt transferați si statusul devine “SUCCESSUL”. Daca sumaeste prea mare, statusul devine “ERROR” si transferul este anulat. Daca IBAN-ul este către o alta banca, se
-percepe un comision de 1%. Pentru a afla daca banca este diferita, verificați substring din IBAN (ex:
-ROBTRL25235346 si ROING5363464764).
-*/
-
 drop schema Aplicatie_bancara;
 create schema if not exists Aplicatie_bancara;
 use Aplicatie_bancara;
-
 
 -- rankurile pe care le poate avea un user
 -- ----------------------------------------
@@ -48,7 +25,7 @@ create table if not exists `users`(
     `cnp` char(13) not null unique primary key , -- cheie primara
     `nume` varchar(20) not null , -- numele utilizatorului
     `prenume` varchar(20) not null, -- prenumele utilizatorului
-    `adresa` varchar(30) not null, -- adresa fizica a utilizatorului
+    `adresa` varchar(40) not null, -- adresa fizica a utilizatorului
     `numar_de_telefon` varchar(10) not null , -- numarul de telefon al utilizatorului
     `numar_de_contract` integer , -- numarul de contract al utilizatorului
     `rank` integer not null default 1 , -- rankul din cadrul aplicatiei
@@ -60,8 +37,8 @@ create table if not exists `users`(
 -- tabela clientilor
 create table if not exists `clienti` (
     `data_nasterii` date not null , -- data nasterii utilizatorului
-    `adresa` varchar(30) not null unique , -- adresa de email a clientului
-    `sursa_principala_de_venit` varchar(30) not null, -- sursa principala de venit a clientului
+    `adresa` varchar(40) not null unique , -- adresa de email a clientului
+    `sursa_principala_de_venit` varchar(40) not null, -- sursa principala de venit a clientului
     `tranzactii_online` boolean,
     `cnp` char(13) not null unique primary key ,
     constraint fk_cnp_user_clienti foreign key (`cnp`) references users(`cnp`)
@@ -74,7 +51,7 @@ create table if not exists `clienti` (
 create table if not exists `cont_bancar` (
     `suma` integer not null , -- suma de bani din cont
     `curent_economii` boolean , -- 0 = cont curent , 1 = cont de economii
-    `iban` char(24) not null primary key unique
+    `iban` varchar(40) not null primary key unique
 );
 -- ----------------------------------------
 
@@ -82,7 +59,7 @@ create table if not exists `cont_bancar` (
 -- tabela corespondentelor dintre client si conturi
 -- ----------------------------------------
 create table if not exists `relatie_client_cont` (
-    `iban` char(24) not null , -- ibanul corespunde contului bancar
+    `iban` varchar(40) not null , -- ibanul corespunde contului bancar
     `cnp` char(13) not null , -- cnpul corespunde unui client
     constraint fk_cnp_user_relatie foreign key (`cnp`) references users(`cnp`),
     constraint fk_iban_cont_bancar_relatie foreign key (`iban`) references cont_bancar(`iban`)
@@ -164,8 +141,8 @@ create table if not exists `solicitari_card` (
 -- tabela transferurilor bancare dintre clienti
 -- ----------------------------------------
 create table if not exists `transferuri_bancare` (
-    `iban_cont_plecare` char(24) not null , -- contul din care pleaca banii
-    `iban_cont_viraj` char(24) not null , -- contul in care ajung banii
+    `iban_cont_plecare` varchar(40) not null , -- contul din care pleaca banii
+    `iban_cont_viraj` varchar(40) not null , -- contul in care ajung banii
     `numele_titularului` varchar(20) not null , -- numele titularului contului in care ajung banii
     `id` integer unique primary key auto_increment ,
     `status` varchar(10), -- statusul transferului ("CREATED" , "SUCCESSFUL" , "ERROR")

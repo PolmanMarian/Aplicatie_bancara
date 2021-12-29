@@ -61,5 +61,14 @@ public class ClientFrame extends JFrame{
         solicitareCardBancarButton.addActionListener(e -> {
             ClientService.solicitareCardPopUpMenu(Main.currentFrame);
         });
+
+        deschidereContButton.addActionListener(e -> {
+            if (ClientService.permisiuneDeschidereCont()) {
+                AppService.gengericPopUp(Main.currentFrame , "Se poate deschide un cont nou");
+            }
+            else {
+                AppService.gengericPopUp(Main.currentFrame , "NU se poat deschide un alt cont");
+            }
+        });
     }
 }
