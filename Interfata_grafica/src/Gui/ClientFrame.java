@@ -3,6 +3,10 @@ package Gui;
 import UserServices.ClientService;
 
 import javax.swing.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.table.TableCellEditor;
+import java.awt.*;
+import java.util.EventObject;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -48,7 +52,6 @@ public class ClientFrame extends JFrame{
         tabelConturi = new JTable(ClientService.dataModelConturiBancare());
         tabelConturi.setShowGrid(true);
         tabelConturi.setShowVerticalLines(true);
-        tabelConturi.setDefaultEditor(Object.class , null); // nu se pot edita
         scrollConturi = new JScrollPane(tabelConturi);
         vizualizareConturi.setLayout(new BoxLayout(vizualizareConturi , BoxLayout.LINE_AXIS));
         vizualizareConturi.add(scrollConturi);
