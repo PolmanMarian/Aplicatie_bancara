@@ -9,6 +9,8 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientService {
     public static PersonalData personalData = new PersonalData();
@@ -62,12 +64,33 @@ public class ClientService {
     }
 
     public static DefaultTableModel dataModelConturiBancare() {
-        String [][] data = new String[2][2];
-        String cols[] = {"ceva" , "altceva"};
-        data[0][0] = "ana are mere";
-        data[0][1] = "vasile are banane";
-        data[1][0] = "sta pe deal";
-        data[1][1] = "sta sub deal";
+        String SQL = "CALL getAccountData(?)";
+        ResultSet rs;
+        List<String> ret = new ArrayList<>();
+
+        try {
+            CallableStatement collect = Main.c.prepareCall(SQL);
+            collect.setString(1 , personalData.cnp);
+            rs = collect.executeQuery();
+            while(rs.next()) {
+                ret.add(rs.getString(1));
+                ret.add(rs.getString(2));
+                ret.add(rs.getString(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        final int size = ret.size();
+        System.out.println(size);
+        String [][]data = new String[size][3];
+        String cols[] = {"suma" , "IBAN" , "economii"};
+        for (int i = 0 ; i < size ; i += 3) {
+            data[i / 3][0] = ret.get(i);
+            data[i / 3][1] = ret.get(i + 1);
+            data[i / 3][2] = ret.get(i + 2);
+        }
+
         DefaultTableModel model = new DefaultTableModel(data , cols);
         return model;
     }
@@ -82,5 +105,4 @@ public class ClientService {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }
