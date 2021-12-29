@@ -21,6 +21,13 @@ begin
 end //
 delimiter ;
 
+update transferuri_bancare set status = 'Pending' where id = 1;
+
+update transferuri_bancare set status = 'ceva' where id = 1;
+
+select * from transferuri_bancare where
+concat(iban_cont_plecare , iban_cont_viraj , numele_titularului , id , `status`) like '%"+criter+"%';
+
 
 #testing
 # call getAccountCount('7610075035');

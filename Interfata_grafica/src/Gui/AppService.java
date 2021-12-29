@@ -32,6 +32,7 @@ public class AppService {
         return ret;
     }
 
+
     public static String getCurrentUsername() {
         return currentUsername;
     }

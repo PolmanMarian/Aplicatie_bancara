@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminService {
-    public static DefaultTableModel dataModelTransferuriBancare() {
-        String SQL = "select * from transferuri_bancare";
+    public static DefaultTableModel dataModelTransferuriBancare(String sqlSelect) {
+        String SQL;
+        if (sqlSelect.equals(""))
+            SQL = "select * from transferuri_bancare";
+        else
+            SQL = sqlSelect;
         ResultSet rs;
         List<String> ret = new ArrayList<>();
         String cols[] = {"iban_cont_plecare" , "iban_cont_intrare" , "nume_titular" , "id" , "status"};
