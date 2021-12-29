@@ -137,7 +137,6 @@ create table if not exists `solicitari_card` (
 );
 -- ----------------------------------------
 
-
 -- tabela transferurilor bancare dintre clienti
 -- ----------------------------------------
 create table if not exists `transferuri_bancare` (
@@ -150,3 +149,4 @@ create table if not exists `transferuri_bancare` (
     constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`)
 );
 -- ----------------------------------------
+

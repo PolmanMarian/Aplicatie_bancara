@@ -55,6 +55,7 @@ public class MainFrame extends JFrame {
                 }
             }
         });
+
         password.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {

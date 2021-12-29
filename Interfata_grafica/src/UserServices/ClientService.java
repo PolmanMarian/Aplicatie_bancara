@@ -40,6 +40,15 @@ public class ClientService {
 
     public static boolean permnisiuneSolicitareCardBancar() {
         /// de determinat cand un client are dreptul de a solicita un card fizic
+        String statement = "select * from `solicitari_card` where `cnp` = " + personalData.cnp;
+        try {
+            PreparedStatement check = Main.c.prepareStatement(statement);
+            ResultSet rs = check.executeQuery();
+            return !rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 
@@ -61,6 +70,17 @@ public class ClientService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void solicitareCardPopUpMenu(JFrame frame) {
+        if(permnisiuneSolicitareCardBancar()) {
+            JOptionPane.showMessageDialog(frame , "Solicitrea a fost acceptata" , "Solicitare cont bancar" ,
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+        else {
+            JOptionPane.showMessageDialog(frame , "Solicitare a fost refuzata" , "Solicitare cont bancar" ,
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static DefaultTableModel dataModelConturiBancare() {
@@ -100,14 +120,4 @@ public class ClientService {
         return model;
     }
 
-    public static void solicitareCardPopUpMenu(JFrame frame) {
-        if(permnisiuneSolicitareCardBancar()) {
-            JOptionPane.showMessageDialog(frame , "Solicitrea a fost acceptata" , "Solicitare cont bancar" ,
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-        else {
-            JOptionPane.showMessageDialog(frame , "Solicitare a fost refuzata" , "Solicitare cont bancar" ,
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
 }

@@ -35,7 +35,7 @@ public class AdminService {
             e.printStackTrace();
         }
         final int size = ret.size() / cols.length;
-        System.out.println(size);
+//        System.out.println(size);
         String[][] data = new String[size][5];
         for (int i = 0 ; i < ret.size() ; i += 5) {
             data[i/5][0] = ret.get(i);

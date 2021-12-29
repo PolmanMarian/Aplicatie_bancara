@@ -56,7 +56,13 @@ public class AppService {
     }
 
     public static void addNewUser(RegisterContainer reg) {
-        /// de lucrat
+        String statement = "insert ignore into users (username, password, cnp, nume, prenume, adresa, numar_de_telefon) values ('cerqwerq' , 'c' , '6211217044662' , 'George' , 'Dumitru' , 'In deal' , '4673676674');";
+        try {
+            PreparedStatement add = Main.c.prepareStatement(statement);
+            add.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
