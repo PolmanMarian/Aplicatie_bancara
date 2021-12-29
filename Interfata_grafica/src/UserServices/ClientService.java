@@ -75,7 +75,12 @@ public class ClientService {
             while(rs.next()) {
                 ret.add(rs.getString(1));
                 ret.add(rs.getString(2));
-                ret.add(rs.getString(3));
+                String ceva = rs.getString(3);
+                if(ceva.equals("1")) {
+                    ret.add("Cont de economii");
+                } else {
+                    ret.add("Cont curent");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -48,6 +48,7 @@ public class ClientFrame extends JFrame{
         tabelConturi = new JTable(ClientService.dataModelConturiBancare());
         tabelConturi.setShowGrid(true);
         tabelConturi.setShowVerticalLines(true);
+        tabelConturi.setDefaultEditor(Object.class , null); // nu se pot edita
         scrollConturi = new JScrollPane(tabelConturi);
         vizualizareConturi.setLayout(new BoxLayout(vizualizareConturi , BoxLayout.LINE_AXIS));
         vizualizareConturi.add(scrollConturi);

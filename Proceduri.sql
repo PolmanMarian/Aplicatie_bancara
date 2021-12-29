@@ -1,4 +1,3 @@
-
 use Aplicatie_bancara;
 
 drop procedure if exists getAccountCount;
@@ -25,6 +24,5 @@ delimiter ;
 
 #testing
 # call getAccountCount('7610075035');
-call getAccountData( '7610075035');
-
-select * from users where cnp = '7610075035';
+# call getAccountData( '7610075035');
+# select * from users where cnp = '7610075035';

@@ -1,5 +1,10 @@
 package Gui;
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
+
 import javax.swing.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class AngajatFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -8,6 +13,7 @@ public class AngajatFrame extends JFrame{
     private JTable tranzactiiInAsteptare;
     private JTable DepoziteInAsteptare;
     private JTable vizualizareClienti;
+    private JButton saveChangesButton;
 
     public AngajatFrame(String title) {
         super(title);
@@ -19,6 +25,10 @@ public class AngajatFrame extends JFrame{
             Main.currentFrame.setVisible(false);
             Main.currentFrame.dispose();
             Main.changeCurrentFrame(new MainFrame("Aplicatie Bancara"));
+        });
+
+        saveChangesButton.addActionListener(e -> {
+
         });
     }
 }
