@@ -1,6 +1,10 @@
 package Gui;
 
+import UserServices.ClientService;
+import com.mysql.cj.xdevapi.Client;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -22,6 +26,14 @@ public class ClientFrame extends JFrame{
         this.setContentPane(panel1);
         this.pack();
 
+        ClientService.getPersonalData(AppService.getCurrentUsername() , AppService.getCurrentPassword());
+        ClientService.printData();
+        NumarDeContract.setText(String.valueOf(ClientService.personalData.numarContract));
+        Adresa.setText(ClientService.personalData.adresa);
+        Nume.setText(ClientService.personalData.nume);
+        Prenume.setText(ClientService.personalData.prenume);
+        CNP.setText(ClientService.personalData.cnp);
+        NumarDeTelefon.setText(ClientService.personalData.numarDeTelefon);
 
 
         logutButton.addActionListener( e -> {
