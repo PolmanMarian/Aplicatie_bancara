@@ -1,5 +1,7 @@
 package Gui;
 
+import Containers.RegisterContainer;
+
 import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,6 +44,20 @@ public class AppService {
         JOptionPane.showMessageDialog(frame , "Eroare la logare" , "Login error" ,
                 JOptionPane.INFORMATION_MESSAGE);
     }
+
+    public static void mustAcceptTerms(JFrame frame) {
+        JOptionPane.showMessageDialog(frame , "Trebuie sa accepti termenii si conditiile" , "" ,
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void gengericPopUp(JFrame frame , String message) {
+        JOptionPane.showMessageDialog(frame , message , "" , JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void addNewUser(RegisterContainer reg) {
+        /// de lucrat
+    }
+
 
 }
 

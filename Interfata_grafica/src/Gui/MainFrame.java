@@ -10,6 +10,7 @@ public class MainFrame extends JFrame {
     private JButton loginButton;
     private JButton resetButton;
     private JPanel mainPanel;
+    private JButton registerButton;
 
     public MainFrame(String title) {
         super(title);
@@ -72,6 +73,11 @@ public class MainFrame extends JFrame {
                     password.requestFocus();
                 }
             }
+        });
+        registerButton.addActionListener(e -> {
+                Main.currentFrame.setVisible(false);
+                Main.currentFrame.dispose();
+                Main.changeCurrentFrame(new RegisterFrame("User registration"));
         });
     }
 }
