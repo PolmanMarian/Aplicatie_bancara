@@ -1,10 +1,8 @@
 package Gui;
 
 import UserServices.ClientService;
-import com.mysql.cj.xdevapi.Client;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -19,6 +17,17 @@ public class ClientFrame extends JFrame{
     private JLabel Prenume;
     private JLabel CNP;
     private JLabel NumarDeTelefon;
+
+
+    ///conturi bancare
+    private JPanel conturi;
+    private JPanel vizualizareConturi;
+    private JPanel butoaneCont;
+    private JButton solicitareCardBancarButton;
+    private JButton deschidereContButton;
+    private JButton lichidareContButton;
+    private JTable tabelConturi;
+    private JScrollPane scrollConturi;
 
     public ClientFrame(String title) {
         super(title);
@@ -35,11 +44,21 @@ public class ClientFrame extends JFrame{
         CNP.setText(ClientService.personalData.cnp);
         NumarDeTelefon.setText(ClientService.personalData.numarDeTelefon);
 
+        tabelConturi = new JTable(ClientService.dataModelConturiBancare());
+        tabelConturi.setShowGrid(true);
+        tabelConturi.setShowVerticalLines(true);
+        scrollConturi = new JScrollPane(tabelConturi);
+        vizualizareConturi.setLayout(new BoxLayout(vizualizareConturi , BoxLayout.LINE_AXIS));
+        vizualizareConturi.add(scrollConturi);
 
         logutButton.addActionListener( e -> {
             Main.currentFrame.setVisible(false);
             Main.currentFrame.dispose();
             Main.changeCurrentFrame(new MainFrame("Aplicatie Bancara"));
+        });
+
+        solicitareCardBancarButton.addActionListener(e -> {
+            ClientService.solicitareCardPopUpMenu(Main.currentFrame);
         });
     }
 }
