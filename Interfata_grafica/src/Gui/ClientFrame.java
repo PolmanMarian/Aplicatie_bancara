@@ -3,14 +3,10 @@ package Gui;
 import UserServices.ClientService;
 
 import javax.swing.*;
-import javax.swing.event.CellEditorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableCellEditor;
-import java.awt.*;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
-import java.util.EventObject;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -35,8 +31,16 @@ public class ClientFrame extends JFrame{
     private JButton deschidereContButton;
     private JButton lichidareContButton;
     private JTable tranzactii;
+    private JPanel accountsList;
+    private JPanel companyList;
+    private JButton sendButton;
+    private JTextField contViraj;
+    private JTextField contPlecare;
+    private JTextField sumaTranzactie;
+    private JTable accountsTable;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
+    private JScrollPane scrollAccounts;
 
     /// selectia contului bancar
     public int selectedRowInAccounts = 0;
@@ -56,6 +60,13 @@ public class ClientFrame extends JFrame{
         CNP.setText(ClientService.personalData.cnp);
         NumarDeTelefon.setText(ClientService.personalData.numarDeTelefon);
 
+        accountsTable=new JTable(ClientService.dataModelConturiBancare());
+        accountsTable.setShowGrid(true);
+        accountsTable.setShowVerticalLines(true);
+        scrollAccounts= new JScrollPane(accountsTable);
+        accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
+        accountsList.add(scrollAccounts);
+        
         tabelConturi = new JTable(ClientService.dataModelConturiBancare());
         tabelConturi.setShowGrid(true);
         tabelConturi.setShowVerticalLines(true);
