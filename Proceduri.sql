@@ -21,6 +21,19 @@ begin
 end //
 delimiter ;
 
+drop procedure if exists adaugareRequestIban;
+delimiter //
+create procedure adaugareRequestIban(
+    in iban varchar(40)
+)
+begin
+    insert ignore into `solicitari_card` (iban, aprobare_admin, aprobare_angajat)
+        value (iban , 0 , 0);
+end //
+delimiter ;
+
+
+
 # update transferuri_bancare set status = 'Pending' where id = 1;
 #
 # update transferuri_bancare set status = 'ceva' where id = 1;

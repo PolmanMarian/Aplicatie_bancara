@@ -8,6 +8,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.EventObject;
 
 public class ClientFrame extends JFrame{
@@ -69,10 +71,16 @@ public class ClientFrame extends JFrame{
 
         solicitareCardBancarButton.addActionListener(e -> {
             String currentIban = tabelConturi.getValueAt(selectedRowInAccounts , 1).toString();
-            System.out.println(currentIban);
-            ClientService.solicitareCardPopUpMenu(Main.currentFrame , currentIban);
-            if (ClientService.permnisiuneSolicitareCardBancar(currentIban)) {
-
+            boolean ok = ClientService.permnisiuneSolicitareCardBancar(currentIban);
+            ClientService.solicitareCardPopUpMenu(Main.currentFrame , ok);
+            if (!ok) {
+                CallableStatement adaugare = null;
+                try {
+                    adaugare = Main.c.prepareCall("call adaugareRequestIban('" + currentIban  + "')");
+                    adaugare.executeUpdate();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 

@@ -130,10 +130,10 @@ create table if not exists `angajat` (
 -- tabela solicitarilor de card bancar
 -- ----------------------------------------
 create table if not exists `solicitari_card` (
-    `cnp` char(13) not null unique primary key,
+    `iban` varchar(40) not null unique primary key,
     `aprobare_admin` boolean,
     `aprobare_angajat` boolean,
-    constraint fk_cnp_solicitare_card foreign key (`cnp`) references clienti(`cnp`)
+    constraint fk_cnp_solicitare_card foreign key (`iban`) references relatie_client_cont(`iban`)
 );
 -- ----------------------------------------
 

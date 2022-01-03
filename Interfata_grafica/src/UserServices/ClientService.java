@@ -44,15 +44,11 @@ public class ClientService {
         /// de realizat selectia contului a carui card fizic trebuie emis
         /// de facut inserarea in tabel care atesta ca persoana a solicitat deja cardul bancar
 
-        System.out.println(Iban);
         String statement = "select * from `solicitari_card` where `iban` = " + "'" + Iban + "'";
         try {
             PreparedStatement check = Main.c.prepareStatement(statement);
             ResultSet rs = check.executeQuery();
-            if (!rs.next()) {
-                CallableStatement adaugare = Main.c.prepareCall("call adaugareRequestIban('" + Iban  + "')");
-                adaugare.executeUpdate();
-            }
+            System.out.println(!rs.next());
             return !rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -91,8 +87,9 @@ public class ClientService {
         /// 2) Executarea stergerii
     }
 
-    public static void solicitareCardPopUpMenu(JFrame frame , String Iban) {
-        if(permnisiuneSolicitareCardBancar(Iban)) {
+    public static void solicitareCardPopUpMenu(JFrame frame , boolean ok) {
+        System.out.println(ok);
+        if(!ok) {
             JOptionPane.showMessageDialog(frame , "Solicitrea a fost acceptata" , "Solicitare cont bancar" ,
                     JOptionPane.INFORMATION_MESSAGE);
         }
