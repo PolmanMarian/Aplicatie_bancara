@@ -71,9 +71,11 @@ public class ClientFrame extends JFrame{
 
         solicitareCardBancarButton.addActionListener(e -> {
             String currentIban = tabelConturi.getValueAt(selectedRowInAccounts , 1).toString();
+            System.out.println(currentIban);
             boolean ok = ClientService.permnisiuneSolicitareCardBancar(currentIban);
+            System.out.println(ok);
             ClientService.solicitareCardPopUpMenu(Main.currentFrame , ok);
-            if (!ok) {
+            if (ok) {
                 CallableStatement adaugare = null;
                 try {
                     adaugare = Main.c.prepareCall("call adaugareRequestIban('" + currentIban  + "')");

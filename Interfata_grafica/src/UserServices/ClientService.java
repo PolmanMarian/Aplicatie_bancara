@@ -48,7 +48,6 @@ public class ClientService {
         try {
             PreparedStatement check = Main.c.prepareStatement(statement);
             ResultSet rs = check.executeQuery();
-            System.out.println(!rs.next());
             return !rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,8 +87,7 @@ public class ClientService {
     }
 
     public static void solicitareCardPopUpMenu(JFrame frame , boolean ok) {
-        System.out.println(ok);
-        if(!ok) {
+        if(ok) {
             JOptionPane.showMessageDialog(frame , "Solicitrea a fost acceptata" , "Solicitare cont bancar" ,
                     JOptionPane.INFORMATION_MESSAGE);
         }
