@@ -88,9 +88,34 @@ public class ClientFrame extends JFrame{
 
         deschidereContButton.addActionListener(e -> {
             if (ClientService.permisiuneDeschidereCont()) {
+                String newIban = ClientService.nextIban();
+                System.out.println(newIban);
+                String SQL = "call addNewBankAccount(?,?)";
+                try {
+                    CallableStatement insert = Main.c.prepareCall(SQL);
+                    insert.setString(2 , newIban);
+                    insert.setString(1 , "Depunere");
+                    insert.executeQuery();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
+                System.out.println(newIban);
+                String SQL1 = "call associateCnpIban(? , ?)";
+                CallableStatement bound = null;
+                try {
+                    bound = Main.c.prepareCall(SQL1);
+                    bound.setString(1 , ClientService.personalData.cnp);
+                    bound.setString(2 , newIban);
+                    bound.executeQuery();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                tabelConturi.setModel(ClientService.dataModelConturiBancare());
                 AppService.gengericPopUp(Main.currentFrame , "Se poate deschide un cont nou");
             }
             else {
+                System.out.println("are deja 5");
                 AppService.gengericPopUp(Main.currentFrame , "NU se poat deschide un alt cont");
             }
         });

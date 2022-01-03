@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ClientService {
     public static PersonalData personalData = new PersonalData();
@@ -134,6 +135,46 @@ public class ClientService {
         return model;
     }
 
+    public static String nextIban() {
+        String sequence = "";
+        for (int i = 0 ; i < 2 ; i++) {
+            Random r = new Random();
+            sequence += (char)(r.nextInt(26) + 'A');
+        }
+        for (int i = 0 ; i < 2 ; i++) {
+            Random r = new Random();
+            sequence += (char)(r.nextInt(9) + '0');
+        }
+        sequence += " ";
+        for (int step = 0 ; step < 4 ; step++) {
+            for (int i = 0 ; i < 4 ; i++) {
+                Random r = new Random();
+                sequence += (char)(r.nextInt(9) + '0');
+            }
+            sequence += " ";
+        }
+        return sequence;
+    }
 
+    public static boolean ibanExists(String iban) {
+        String SQL = "call existsIban(?)";
+        try {
+            CallableStatement exists = Main.c.prepareCall(SQL);
+            exists.setString(1  , iban);
+            ResultSet rs = exists.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public static String generateIban() {
+        String new_iban = null;
+        do {
+            new_iban = nextIban();
+        }while (ibanExists(new_iban));
+        return new_iban;
+    }
 
 }

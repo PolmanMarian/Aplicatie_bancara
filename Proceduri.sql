@@ -42,6 +42,42 @@ begin
 end //
 
 
+drop procedure if exists existsIban;
+delimiter //
+create procedure existsIban(
+    in `iban_to_select` varchar(40)
+)
+begin
+    select * from cont_bancar where `iban_to_select` = `iban`;
+end //
+
+drop procedure if exists addNewBankAccount;
+delimiter //
+create procedure addNewBankAccount(
+    in `newIban` varchar(40),
+    in `tip` varchar(40)
+)
+begin
+    insert ignore into `cont_bancar` (suma, curent_economii, iban)
+        value (0 , newIban , tip);
+end //
+
+drop procedure if exists associateCnpIban;
+delimiter //
+create procedure associateCnpIban(
+    in `@CNP` char(13),
+    in `@IBAN` varchar(40)
+)
+begin
+    insert `relatie_client_cont` (iban, cnp)
+        value (`@IBAN` , `@CNP`);
+end //
+
+
+
+
+
+call addNewBankAccount('hwsdfkajdsgfahsdfasd' , 'jfasdfj')
 
 # update transferuri_bancare set status = 'Pending' where id = 1;
 #
