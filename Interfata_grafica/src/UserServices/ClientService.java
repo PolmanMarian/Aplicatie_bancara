@@ -1,6 +1,7 @@
 package UserServices;
 
 import Containers.PersonalData;
+import Gui.ClientFrame;
 import Gui.Main;
 
 import javax.swing.*;
@@ -38,17 +39,24 @@ public class ClientService {
         System.out.println(personalData.toString());
     }
 
-    public static boolean permnisiuneSolicitareCardBancar() {
+    public static boolean permnisiuneSolicitareCardBancar(String Iban) {
         /// de determinat cand un client are dreptul de a solicita un card fizic
-        String statement = "select * from `solicitari_card` where `cnp` = " + personalData.cnp;
+        /// de realizat selectia contului a carui card fizic trebuie emis
+        /// de facut inserarea in tabel care atesta ca persoana a solicitat deja cardul bancar
+
+        System.out.println(Iban);
+        String statement = "select * from `solicitari_card` where `iban` = " + "'" + Iban + "'";
         try {
             PreparedStatement check = Main.c.prepareStatement(statement);
             ResultSet rs = check.executeQuery();
+            if (!rs.next()) {
+                CallableStatement adaugare = Main.c.prepareCall("call adaugareRequestIban('" + Iban  + "')");
+                adaugare.executeUpdate();
+            }
             return !rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return false;
     }
 
@@ -72,8 +80,19 @@ public class ClientService {
         return false;
     }
 
-    public static void solicitareCardPopUpMenu(JFrame frame) {
-        if(permnisiuneSolicitareCardBancar()) {
+    public static void deschidereCont() {
+        /// 1) verificare solicitare cont
+        /// 2) generarea unui iban nou
+        /// 3) inregistrarea ibanului in tabela
+    }
+
+    public static void inchidereDepozit() {
+        /// 1) Menu selectie depozit pentru inchidere
+        /// 2) Executarea stergerii
+    }
+
+    public static void solicitareCardPopUpMenu(JFrame frame , String Iban) {
+        if(permnisiuneSolicitareCardBancar(Iban)) {
             JOptionPane.showMessageDialog(frame , "Solicitrea a fost acceptata" , "Solicitare cont bancar" ,
                     JOptionPane.INFORMATION_MESSAGE);
         }
@@ -119,5 +138,7 @@ public class ClientService {
         DefaultTableModel model = new DefaultTableModel(data , cols);
         return model;
     }
+
+
 
 }

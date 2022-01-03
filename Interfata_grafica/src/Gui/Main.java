@@ -26,7 +26,7 @@ public class Main {
         try {
             c = DriverManager.getConnection(URL + DB_NAME , USER , PASSWORD);
         } catch ( Exception e ) {
-            System.out.println("Nu -i bine!");
+            System.out.println("Error!");
             System.out.println("SQLState: " + ((SQLException) e).getSQLState());
             System.out.println("VendorError: " + ((SQLException) e).getErrorCode());
         }
