@@ -95,15 +95,28 @@ public class ClientFrame extends JFrame{
             }
         });
 
+        lichidareContButton.addActionListener(e->{
+            String currentIban= tabelConturi.getValueAt(selectedRowInAccounts,1).toString();
+            String SQL = "CALL deleteIban(?)";
+            try {
+                CallableStatement delete = Main.c.prepareCall(SQL);
+                delete.setString(1 , currentIban);
+                delete.executeQuery();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            tabelConturi.setModel(ClientService.dataModelConturiBancare());
+        });
+
         tabelConturi.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 selectedRowInAccounts = tabelConturi.getSelectedRow();
-               // System.out.println(selectedRowInAccounts);
-//                System.out.println(tabelConturi.getValueAt(tabelConturi.getSelectedRow() , 1).toString());
             }
         });
+
     }
+
 
     public JTabbedPane getTabbedPane1() {
         return tabbedPane1;

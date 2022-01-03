@@ -57,10 +57,8 @@ public class AdminFrame extends JFrame {
 
         searchText.addActionListener(e -> {
             String criteriu = searchText.getText();
-//            System.out.println(criteriu);
             String statement = "select * from transferuri_bancare " +
                     "where concat(iban_cont_plecare , iban_cont_viraj , numele_titularului , id , `status`) like '%"+ criteriu +"%';";
-//            System.out.println(statement);
             operatiuni.setModel(AdminService.dataModelTransferuriBancare(statement));
 
         });

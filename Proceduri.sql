@@ -32,6 +32,15 @@ begin
 end //
 delimiter ;
 
+drop procedure if exists deleteIban;
+delimiter //
+create procedure deleteIban(
+    in `iban_to_delete` varchar(40)
+)
+begin
+    delete from `cont_bancar` where `iban` = `iban_to_delete`;
+end //
+
 
 
 # update transferuri_bancare set status = 'Pending' where id = 1;

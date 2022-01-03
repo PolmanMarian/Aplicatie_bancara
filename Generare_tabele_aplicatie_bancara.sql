@@ -29,7 +29,7 @@ create table if not exists `users`(
     `numar_de_telefon` varchar(10) not null , -- numarul de telefon al utilizatorului
     `numar_de_contract` integer , -- numarul de contract al utilizatorului
     `rank` integer not null default 1 , -- rankul din cadrul aplicatiei
-    constraint fk_user_rank foreign key (`rank`) references user_rank(id)
+    constraint fk_user_rank foreign key (`rank`) references user_rank(id) on delete cascade
 );
 -- ----------------------------------------
 
@@ -41,7 +41,7 @@ create table if not exists `clienti` (
     `sursa_principala_de_venit` varchar(40) not null, -- sursa principala de venit a clientului
     `tranzactii_online` boolean,
     `cnp` char(13) not null unique primary key ,
-    constraint fk_cnp_user_clienti foreign key (`cnp`) references users(`cnp`)
+    constraint fk_cnp_user_clienti foreign key (`cnp`) references users(`cnp`) on delete cascade
 );
 -- ----------------------------------------
 
@@ -61,8 +61,8 @@ create table if not exists `cont_bancar` (
 create table if not exists `relatie_client_cont` (
     `iban` varchar(40) not null , -- ibanul corespunde contului bancar
     `cnp` char(13) not null , -- cnpul corespunde unui client
-    constraint fk_cnp_user_relatie foreign key (`cnp`) references users(`cnp`),
-    constraint fk_iban_cont_bancar_relatie foreign key (`iban`) references cont_bancar(`iban`)
+    constraint fk_cnp_user_relatie foreign key (`cnp`) references users(`cnp`) on delete cascade,
+    constraint fk_iban_cont_bancar_relatie foreign key (`iban`) references cont_bancar(`iban`) on delete cascade
 );
 -- ----------------------------------------
 
@@ -86,7 +86,7 @@ value
 -- ----------------------------------------
 create table if not exists `departament` (
     `nume_departament` integer not null unique primary key ,
-    constraint fk_nume_departament foreign key (`nume_departament`) references nume_departamente(`id`)
+    constraint fk_nume_departament foreign key (`nume_departament`) references nume_departamente(`id`) on delete cascade
 );
 -- ----------------------------------------
 
@@ -102,7 +102,7 @@ create table if not exists `permisiuni_departament` (
     `activitati_bancare` integer ,
     `modificare_baza_de_date` integer,
     `activitati_legate_de_utilizatori` integer,
-    constraint fk_nume_deparament_permisiuni foreign key (`nume_departament`) references nume_departamente(`id`)
+    constraint fk_nume_deparament_permisiuni foreign key (`nume_departament`) references nume_departamente(`id`) on delete cascade
 );
 
 insert into `permisiuni_departament` (nume_departament, activitati_bancare, modificare_baza_de_date, activitati_legate_de_utilizatori)
@@ -121,8 +121,8 @@ create table if not exists `angajat` (
     `sucursala` integer ,
     `departament` integer , -- departamentul la care este asociat
     `cnp` char(13) not null unique primary key ,
-    constraint fk_departament_angajat foreign key (`departament`) references nume_departamente(`id`) ,
-    constraint fk_cnp_angajati foreign key (`cnp`) references users(`cnp`)
+    constraint fk_departament_angajat foreign key (`departament`) references nume_departamente(`id`) on delete cascade ,
+    constraint fk_cnp_angajati foreign key (`cnp`) references users(`cnp`) on delete cascade
 );
 -- ----------------------------------------
 
@@ -133,7 +133,7 @@ create table if not exists `solicitari_card` (
     `iban` varchar(40) not null unique primary key,
     `aprobare_admin` boolean,
     `aprobare_angajat` boolean,
-    constraint fk_cnp_solicitare_card foreign key (`iban`) references relatie_client_cont(`iban`)
+    constraint fk_cnp_solicitare_card foreign key (`iban`) references relatie_client_cont(`iban`) on delete cascade
 );
 -- ----------------------------------------
 
@@ -145,8 +145,8 @@ create table if not exists `transferuri_bancare` (
     `numele_titularului` varchar(20) not null , -- numele titularului contului in care ajung banii
     `id` integer unique primary key auto_increment ,
     `status` varchar(10), -- statusul transferului ("CREATED" , "SUCCESSFUL" , "ERROR")
-    constraint fk_iban_cont_plecare_transfer foreign key (`iban_cont_plecare`) references cont_bancar(`iban`),
-    constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`)
+    constraint fk_iban_cont_plecare_transfer foreign key (`iban_cont_plecare`) references cont_bancar(`iban`) on delete cascade,
+    constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`) on delete cascade
 );
 -- ----------------------------------------
 
