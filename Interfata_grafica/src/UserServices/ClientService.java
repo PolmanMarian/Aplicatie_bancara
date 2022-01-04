@@ -97,42 +97,6 @@ public class ClientService {
         }
     }
 
-    public static DefaultTableModel dataModelConturiBancare() {
-        String SQL = "CALL getAccountData(?)";
-        ResultSet rs;
-        List<String> ret = new ArrayList<>();
-
-        try {
-            CallableStatement collect = Main.c.prepareCall(SQL);
-            collect.setString(1 , personalData.cnp);
-            rs = collect.executeQuery();
-            while(rs.next()) {
-                ret.add(rs.getString(1));
-                ret.add(rs.getString(2));
-                String ceva = rs.getString(3);
-                if(ceva.equals("1")) {
-                    ret.add("Cont de economii");
-                } else {
-                    ret.add("Cont curent");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        final int size = ret.size();
-        System.out.println(size);
-        String [][]data = new String[size][3];
-        String cols[] = {"suma" , "IBAN" , "economii"};
-        for (int i = 0 ; i < size ; i += 3) {
-            data[i / 3][0] = ret.get(i);
-            data[i / 3][1] = ret.get(i + 1);
-            data[i / 3][2] = ret.get(i + 2);
-        }
-
-        DefaultTableModel model = new DefaultTableModel(data , cols);
-        return model;
-    }
 
     public static String nextIban() {
         String sequence = "";
@@ -175,5 +139,4 @@ public class ClientService {
         }while (ibanExists(new_iban));
         return new_iban;
     }
-
 }

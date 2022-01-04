@@ -37,6 +37,14 @@ public class ClientFrame extends JFrame{
     private JTextField contViraj;
     private JTextField contPlecare;
     private JTextField sumaTranzactie;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
+    private JTextField selectedAccount;
+    private JTextField toSendIban;
+    private JTextField toSend;
+    private JTextField toSendName;
+    private JButton sendButton1;
+    private JButton clearButton;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
 
@@ -58,19 +66,31 @@ public class ClientFrame extends JFrame{
         CNP.setText(ClientService.personalData.cnp);
         NumarDeTelefon.setText(ClientService.personalData.phoneNumber);
 
-        JTable accountsTable = new JTable(ClientService.dataModelConturiBancare());
-        accountsTable.setShowGrid(true);
-        accountsTable.setShowVerticalLines(true);
-        JScrollPane scrollAccounts = new JScrollPane(accountsTable);
-        accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
-        accountsList.add(scrollAccounts);
-        
-        tabelConturi = new JTable(ClientService.dataModelConturiBancare());
-        tabelConturi.setShowGrid(true);
-        tabelConturi.setShowVerticalLines(true);
-        scrollConturi = new JScrollPane(tabelConturi);
-        vizualizareConturi.setLayout(new BoxLayout(vizualizareConturi , BoxLayout.LINE_AXIS));
-        vizualizareConturi.add(scrollConturi);
+
+        try {
+            String SQL_2 = "CALL getAccountData(?)";
+            CallableStatement to_call = Main.c.prepareCall(SQL_2);
+            to_call.setString(1 , ClientService.personalData.cnp);
+            String[] cols = {"suma" , "IBAN" , "economii"};
+            var content = AppService.getGenericDataModel(to_call ,  cols);
+            JTable accountsTable = new JTable(content);
+            accountsTable.setShowGrid(true);
+            accountsTable.setShowVerticalLines(true);
+            JScrollPane scrollAccounts = new JScrollPane(accountsTable);
+            accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
+            accountsList.add(scrollAccounts);
+
+
+            tabelConturi = new JTable(content);
+            tabelConturi.setShowGrid(true);
+            tabelConturi.setShowVerticalLines(true);
+            scrollConturi = new JScrollPane(tabelConturi);
+            vizualizareConturi.setLayout(new BoxLayout(vizualizareConturi , BoxLayout.LINE_AXIS));
+            vizualizareConturi.add(scrollConturi);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
         logutButton.addActionListener( e -> {
             Main.currentFrame.setVisible(false);
@@ -120,7 +140,15 @@ public class ClientFrame extends JFrame{
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                tabelConturi.setModel(ClientService.dataModelConturiBancare());
+                String SQL_2 = "CALL getAccountData(?)";
+                try {
+                    CallableStatement to_call = Main.c.prepareCall(SQL_2);
+                    to_call.setString(1 , ClientService.personalData.cnp);
+                    String[] cols = {"suma" , "IBAN" , "economii"};
+                    tabelConturi.setModel(AppService.getGenericDataModel(to_call ,  cols));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
                 AppService.gengericPopUp(Main.currentFrame , "Se poate deschide un cont nou");
             }
             else {
@@ -139,7 +167,15 @@ public class ClientFrame extends JFrame{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            tabelConturi.setModel(ClientService.dataModelConturiBancare());
+            String SQL_2 = "CALL getAccountData(?)";
+            try {
+                CallableStatement to_call = Main.c.prepareCall(SQL_2);
+                to_call.setString(1 , ClientService.personalData.cnp);
+                String[] cols = {"suma" , "IBAN" , "economii"};
+                tabelConturi.setModel(AppService.getGenericDataModel(to_call ,  cols));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
 
         tabelConturi.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

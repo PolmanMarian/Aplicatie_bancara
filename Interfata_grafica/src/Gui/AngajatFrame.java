@@ -1,10 +1,6 @@
 package Gui;
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
 import javax.swing.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class AngajatFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -14,6 +10,7 @@ public class AngajatFrame extends JFrame{
     private JTable DepoziteInAsteptare;
     private JTable vizualizareClienti;
     private JButton saveChangesButton;
+    private JTextField Selectie;
 
     public AngajatFrame(String title) {
         super(title);
