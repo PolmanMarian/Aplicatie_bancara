@@ -31,13 +31,13 @@ public class ClientFrame extends JFrame{
     private JButton deschidereContButton;
     private JButton lichidareContButton;
     private JTable tranzactii;
+    private JTable firme;
     private JPanel accountsList;
     private JPanel companyList;
     private JButton sendButton;
     private JTextField contViraj;
     private JTextField contPlecare;
     private JTextField sumaTranzactie;
-    private JComboBox comboBox1;
     private JComboBox comboBox2;
     private JTextField selectedAccount;
     private JTextField toSendIban;
@@ -45,11 +45,16 @@ public class ClientFrame extends JFrame{
     private JTextField toSendName;
     private JButton sendButton1;
     private JButton clearButton;
+    private JPanel tranzactiiView;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
+    private JScrollPane scrollTransferuri;
+    private JScrollPane scrollFirme;
+    private JTable accountsTable;
 
     /// selectia contului bancar
     public int selectedRowInAccounts = 0;
+    public int selectedRowInTranzactii = 0;
 
     public ClientFrame(String title) {
         super(title);
@@ -73,13 +78,13 @@ public class ClientFrame extends JFrame{
             to_call.setString(1 , ClientService.personalData.cnp);
             String[] cols = {"suma" , "IBAN" , "economii"};
             var content = AppService.getGenericDataModel(to_call ,  cols);
-            JTable accountsTable = new JTable(content);
+
+            accountsTable = new JTable(content);
             accountsTable.setShowGrid(true);
             accountsTable.setShowVerticalLines(true);
             JScrollPane scrollAccounts = new JScrollPane(accountsTable);
             accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
             accountsList.add(scrollAccounts);
-
 
             tabelConturi = new JTable(content);
             tabelConturi.setShowGrid(true);
@@ -87,6 +92,31 @@ public class ClientFrame extends JFrame{
             scrollConturi = new JScrollPane(tabelConturi);
             vizualizareConturi.setLayout(new BoxLayout(vizualizareConturi , BoxLayout.LINE_AXIS));
             vizualizareConturi.add(scrollConturi);
+
+            String SQL_3 = "CALL getTransfer(?,?)";
+            CallableStatement getTransfer = Main.c.prepareCall(SQL_3);
+            getTransfer.setString(1 , ClientService.personalData.lastName);
+            getTransfer.setString(2 , ClientService.personalData.firstName);
+            String[] colsTransfer = {"Data" , "Suma" , "Iban plecare" , "Iban destinatie" , "Nume destinatar"};
+            var tableModelTransfer = AppService.getGenericDataModel(getTransfer , colsTransfer);
+
+            tranzactii = new JTable(tableModelTransfer);
+            tranzactii.setShowVerticalLines(true);
+            tranzactii.setShowGrid(true);
+            scrollTransferuri = new JScrollPane(tranzactii);
+            tranzactiiView.setLayout(new BoxLayout(tranzactiiView , BoxLayout.LINE_AXIS));
+            tranzactiiView.add(scrollTransferuri);
+
+//            String SQL_4 = "CALL getFirme";
+//            CallableStatement getFirme = Main.c.prepareCall(SQL_4);
+//            String[] colsFirme = {"Iban" , "Furnizor"};
+//            var tableModelFirme = AppService.getGenericDataModel(getFirme , colsFirme);
+//            firme = new JTable(tableModelFirme);
+//            firme.setShowGrid(true);
+//            firme.setShowVerticalLines(true);
+//            scrollFirme = new JScrollPane(firme);
+//            companyList.setLayout(new BoxLayout(companyList , BoxLayout.LINE_AXIS));
+//            companyList.add(scrollFirme);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -183,6 +213,18 @@ public class ClientFrame extends JFrame{
             public void valueChanged(ListSelectionEvent e) {
                 selectedRowInAccounts = tabelConturi.getSelectedRow();
             }
+        });
+
+        accountsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedRowInTranzactii = accountsTable.getSelectedRow();
+                contPlecare.setText(accountsTable.getValueAt(selectedRowInTranzactii , 1).toString());
+            }
+        });
+
+        sendButton.addActionListener(e -> {
+            System.out.println(selectedRowInTranzactii);
         });
 
     }
