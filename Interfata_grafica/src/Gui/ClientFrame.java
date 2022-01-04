@@ -37,10 +37,8 @@ public class ClientFrame extends JFrame{
     private JTextField contViraj;
     private JTextField contPlecare;
     private JTextField sumaTranzactie;
-    private JTable accountsTable;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
-    private JScrollPane scrollAccounts;
 
     /// selectia contului bancar
     public int selectedRowInAccounts = 0;
@@ -53,17 +51,17 @@ public class ClientFrame extends JFrame{
 
         ClientService.getPersonalData(AppService.getCurrentUsername() , AppService.getCurrentPassword());
         ClientService.printData();
-        NumarDeContract.setText(String.valueOf(ClientService.personalData.numarContract));
-        Adresa.setText(ClientService.personalData.adresa);
-        Nume.setText(ClientService.personalData.nume);
-        Prenume.setText(ClientService.personalData.prenume);
+        NumarDeContract.setText(String.valueOf(ClientService.personalData.contractNumber));
+        Adresa.setText(ClientService.personalData.adress);
+        Nume.setText(ClientService.personalData.lastName);
+        Prenume.setText(ClientService.personalData.firstName);
         CNP.setText(ClientService.personalData.cnp);
-        NumarDeTelefon.setText(ClientService.personalData.numarDeTelefon);
+        NumarDeTelefon.setText(ClientService.personalData.phoneNumber);
 
-        accountsTable=new JTable(ClientService.dataModelConturiBancare());
+        JTable accountsTable = new JTable(ClientService.dataModelConturiBancare());
         accountsTable.setShowGrid(true);
         accountsTable.setShowVerticalLines(true);
-        scrollAccounts= new JScrollPane(accountsTable);
+        JScrollPane scrollAccounts = new JScrollPane(accountsTable);
         accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
         accountsList.add(scrollAccounts);
         

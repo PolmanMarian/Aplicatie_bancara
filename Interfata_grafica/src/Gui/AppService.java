@@ -1,7 +1,6 @@
 package Gui;
 
 import Containers.RegisterContainer;
-
 import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,6 +54,7 @@ public class AppService {
     }
 
     public static void addNewUser(RegisterContainer reg) {
+        /// de terminat de facut inregistrarea cu o procedura
         String statement = "insert ignore into users (username, password, cnp, nume, prenume, adresa, numar_de_telefon) values ('cerqwerq' , 'c' , '6211217044662' , 'George' , 'Dumitru' , 'In deal' , '4673676674');";
         try {
             PreparedStatement add = Main.c.prepareStatement(statement);

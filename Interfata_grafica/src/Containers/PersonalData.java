@@ -3,19 +3,19 @@ package Containers;
 import java.util.Objects;
 
 public class PersonalData {
-    public String nume;
-    public String prenume;
+    public String lastName;
+    public String firstName;
     public String cnp;
-    public String adresa;
-    public int numarContract;
-    public String numarDeTelefon;
+    public String adress;
+    public int contractNumber;
+    public String phoneNumber;
 
     public PersonalData() {
-        nume = new String();
-        prenume = new String();
-        cnp = new String();
-        adresa = new String();
-        numarDeTelefon = new String();
+        lastName = "";
+        firstName = "";
+        cnp = "";
+        adress = "";
+        phoneNumber = "";
     }
 
     @Override
@@ -23,22 +23,22 @@ public class PersonalData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PersonalData that = (PersonalData) o;
-        return Objects.equals(nume, that.nume) && Objects.equals(prenume, that.prenume) && Objects.equals(cnp, that.cnp) && Objects.equals(adresa, that.adresa) && Objects.equals(numarContract, that.numarContract);
+        return Objects.equals(lastName, that.lastName) && Objects.equals(firstName, that.firstName) && Objects.equals(cnp, that.cnp) && Objects.equals(adress, that.adress) && Objects.equals(contractNumber, that.contractNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nume, prenume, cnp, adresa, numarContract);
+        return Objects.hash(lastName, firstName, cnp, adress, contractNumber);
     }
 
     @Override
     public String toString() {
         return "PersonalData{" +
-                "nume='" + nume + '\'' +
-                ", prenume='" + prenume + '\'' +
+                "nume='" + lastName + '\'' +
+                ", prenume='" + firstName + '\'' +
                 ", cnp='" + cnp + '\'' +
-                ", adresa='" + adresa + '\'' +
-                ", numarContract='" + numarContract + '\'' +
+                ", adresa='" + adress + '\'' +
+                ", numarContract='" + contractNumber + '\'' +
                 '}';
     }
 }

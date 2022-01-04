@@ -15,9 +15,9 @@ public class AdminFrame extends JFrame {
     private JPanel transferuri;
     private JPanel displayPanel;
     private JPanel searchBar;
-    private JTable operatiuni;
-    private JScrollPane scrollPane;
-    private JTextField searchText;
+    private final JTable operatiuni;
+    private final JScrollPane scrollPane;
+    private final JTextField searchText;
 
     public AdminFrame(String title) {
         super(title);
@@ -29,6 +29,7 @@ public class AdminFrame extends JFrame {
         operatiuni.setShowGrid(true);
         operatiuni.setShowVerticalLines(true);
         String [] cols = {"iban_cont_plecare" , "iban_cont_viraj" , "numele_titularului" , "id" , "status"};
+
         operatiuni.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -36,7 +37,7 @@ public class AdminFrame extends JFrame {
                 final int row = e.getFirstRow();
                 String ceva = (String) operatiuni.getValueAt(row , col);
                 System.out.println(ceva);
-                String SQL = "update transferuri_bancare set " + cols[col] + "= '"+ ceva +"' where id = " +(String) operatiuni.getValueAt(row , 3)+";";
+                String SQL = "update transferuri_bancare set " + cols[col] + "= '"+ ceva +"' where id = " + operatiuni.getValueAt(row , 3) +";";
                 System.out.println(SQL);
                 CallableStatement update = null;
                 try {
@@ -60,7 +61,6 @@ public class AdminFrame extends JFrame {
             String statement = "select * from transferuri_bancare " +
                     "where concat(iban_cont_plecare , iban_cont_viraj , numele_titularului , id , `status`) like '%"+ criteriu +"%';";
             operatiuni.setModel(AdminService.dataModelTransferuriBancare(statement));
-
         });
 
         logoutButton.addActionListener( e -> {

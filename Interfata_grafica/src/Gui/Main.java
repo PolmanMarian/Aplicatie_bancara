@@ -1,8 +1,6 @@
 package Gui;
-import UserServices.ClientService;
 
 import javax.swing.*;
-import java.awt.*;
 import java.sql.*;
 
 public class Main {
@@ -28,6 +26,7 @@ public class Main {
         try {
             c = DriverManager.getConnection(URL + DB_NAME , USER , PASSWORD);
         } catch ( Exception e ) {
+            assert e instanceof SQLException;
             System.out.println("Error!");
             System.out.println("SQLState: " + ((SQLException) e).getSQLState());
             System.out.println("VendorError: " + ((SQLException) e).getErrorCode());
