@@ -104,7 +104,7 @@ create procedure getTransfer(
 )
 begin
 
-    select data,suma,iban_cont_plecare,iban_cont_viraj,status from transferuri_bancare
+    select data, suma, iban_cont_plecare, iban_cont_viraj, numele_virant, status from transferuri_bancare
     where numele_titularului=concat(nume,' ',prenume);
 
 end //
