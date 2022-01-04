@@ -2,6 +2,7 @@ drop schema Aplicatie_bancara;
 create schema if not exists Aplicatie_bancara;
 use Aplicatie_bancara;
 
+
 -- rankurile pe care le poate avea un user
 -- ----------------------------------------
 create table if not exists user_rank (

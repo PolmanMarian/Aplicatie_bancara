@@ -1,5 +1,6 @@
 use Aplicatie_bancara;
 
+
 drop procedure if exists getAccountCount;
 delimiter //
 create procedure getAccountCount(
