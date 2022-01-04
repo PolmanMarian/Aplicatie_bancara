@@ -153,5 +153,6 @@ create table if not exists `transferuri_bancare` (
     constraint fk_iban_cont_plecare_transfer foreign key (`iban_cont_plecare`) references cont_bancar(`iban`) on delete cascade,
     constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`) on delete cascade
 );
+
 -- ----------------------------------------
 
