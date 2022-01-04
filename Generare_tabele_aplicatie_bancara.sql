@@ -146,6 +146,7 @@ create table if not exists `transferuri_bancare` (
     `iban_cont_plecare` varchar(40) not null , -- contul din care pleaca banii
     `iban_cont_viraj` varchar(40) not null , -- contul in care ajung banii
     `numele_titularului` varchar(20) not null , -- numele titularului contului in care ajung banii
+    `numele_virant` varchar(20) not null , -- numele virant contului in care ajung banii
     `id` integer unique primary key auto_increment ,
     `status` varchar(10), -- statusul transferului ("CREATED" , "SUCCESSFUL" , "ERROR")
     `data` date,
