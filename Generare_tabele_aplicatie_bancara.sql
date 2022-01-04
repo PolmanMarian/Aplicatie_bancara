@@ -137,14 +137,18 @@ create table if not exists `solicitari_card` (
 );
 -- ----------------------------------------
 
+
 -- tabela transferurilor bancare dintre clienti
 -- ----------------------------------------
+drop table if exists `transferuri_bancare`;
 create table if not exists `transferuri_bancare` (
+    `suma` integer,
     `iban_cont_plecare` varchar(40) not null , -- contul din care pleaca banii
     `iban_cont_viraj` varchar(40) not null , -- contul in care ajung banii
     `numele_titularului` varchar(20) not null , -- numele titularului contului in care ajung banii
     `id` integer unique primary key auto_increment ,
     `status` varchar(10), -- statusul transferului ("CREATED" , "SUCCESSFUL" , "ERROR")
+    `data` date,
     constraint fk_iban_cont_plecare_transfer foreign key (`iban_cont_plecare`) references cont_bancar(`iban`) on delete cascade,
     constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`) on delete cascade
 );

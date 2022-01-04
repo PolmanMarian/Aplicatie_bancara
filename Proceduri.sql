@@ -73,8 +73,53 @@ begin
         value (`@IBAN` , `@CNP`);
 end //
 
+-- Vizualizare tranzactii
+
+drop procedure if exists provideTransfers;
+delimiter //
+create procedure provideTransfers(
+    in `IbanIN` varchar(40),
+    in `NameIN` varchar(40)
+)
+begin
+    select concat(u.nume,' ',u.prenume) as NumePrenume,
+           tc.iban_cont_viraj,
+           tc.iban_cont_plecare,
+           tc.data
+           from transferuri_bancare as tc
+        join relatie_client_cont as rcc
+            on tc.iban_cont_plecare=rcc.iban
+        join clienti as c
+            on rcc.cnp = c.cnp
+        join users u on c.cnp = u.cnp
+    where tc.iban_cont_plecare=IbanIN and concat(u.nume,' ',u.prenume)=NameIN;
+end //
 
 
+drop procedure if exists getTransfer;
+delimiter //
+create procedure getTransfer(
+    nume varchar(20),
+    prenume varchar(20)
+)
+begin
+
+    select data,suma,iban_cont_plecare,iban_cont_viraj,status from transferuri_bancare
+    where numele_titularului=concat(nume,' ',prenume);
+
+end //
+
+# drop procedure if exists insertFullFlow;
+# delimiter //
+# create procedure insertFullFlow(
+#
+#     cnpIn char(13),
+#     username char(13),
+#
+# )
+# begin
+#
+# end //
 
 
 call addNewBankAccount('hwsdfkajdsgfahsdfasd' , 'jfasdfj')
