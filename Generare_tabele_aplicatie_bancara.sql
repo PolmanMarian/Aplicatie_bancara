@@ -2,6 +2,7 @@ drop schema Aplicatie_bancara;
 create schema if not exists Aplicatie_bancara;
 use Aplicatie_bancara;
 
+
 -- rankurile pe care le poate avea un user
 -- ----------------------------------------
 create table if not exists user_rank (
@@ -153,5 +154,6 @@ create table if not exists `transferuri_bancare` (
     constraint fk_iban_cont_plecare_transfer foreign key (`iban_cont_plecare`) references cont_bancar(`iban`) on delete cascade,
     constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`) on delete cascade
 );
+
 -- ----------------------------------------
 
