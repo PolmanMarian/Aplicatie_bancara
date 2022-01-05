@@ -119,7 +119,7 @@ begin
 
     select cb.iban, curent_economii from relatie_client_cont
         join cont_bancar cb on cb.iban = relatie_client_cont.iban
-    where cnp='00000000000000000';
+    where cnp='0000000000000';
 end//
 
 use Aplicatie_bancara;
@@ -144,27 +144,41 @@ create procedure insertFullFlowClient(
 
 )
 begin
-    insert into users(username, password, cnp, nume, prenume, adresa, numar_de_telefon, numar_de_contract,`rank`)
+    insert into users(cnp,username,password, nume, prenume, adresa, numar_de_telefon, numar_de_contract,`rank`)
     value(cnpIn,usernameIn,passwordIn,numeIn,prenumeIn,adresaIn,nrTelIn,nrCtrIn,rankIn);
 
     insert into clienti(data_nasterii, adresa, sursa_principala_de_venit, cnp)
     value(data_nasteriiIn,adresaIn,sursaVenitIn,cnpIn);
 end //
 
-call insertFullFlowClient('0000000000000','firma','firma','Furnizor','Servicii','-','-','-',5,10-12-2000,'-');
-insert into relatie_client_cont(iban, cnp) value('RO11RZBR7599355624881527','00000000000000000');
-insert into cont_bancar(suma, curent_economii, iban) value (0,'Furnizor Gaze','RO11RZBR7599355624881527');
+call insertFullFlowClient('0000000000000','firma','firma','Furnizor','Servicii','-','-',123,3,'2020-06-26','-');
 
-insert into relatie_client_cont(iban, cnp) value('RO11RZBR7599355624881527','00000000000000000');
-insert into cont_bancar(suma, curent_economii, iban) value (0,'Furnizor Electricitate','TR11RZBR7599355624881527');
+insert into cont_bancar(suma, curent_economii, iban) value (0,1,'RO11RZBR7599355624881527');
+insert into relatie_client_cont(iban, cnp) value('RO11RZBR7599355624881527','0000000000000');
 
-insert into relatie_client_cont(iban, cnp) value('RO11RZBR7599355624881527','00000000000000000');
-insert into cont_bancar(suma, curent_economii, iban) value (0,'Primarie','HU11RZBR7599355624881527');
+insert into cont_bancar(suma, curent_economii, iban) value (0,2,'TR11RZBR7599355624881527');
+insert into relatie_client_cont(iban, cnp) value('TR11RZBR7599355624881527','0000000000000');
 
-insert into relatie_client_cont(iban, cnp) value('RO11RZBR7599355624881527','00000000000000000');
-insert into cont_bancar(suma, curent_economii, iban) value (0,'Fondul de Stat','FS11RZBR7599355624881527');
+insert into cont_bancar(suma, curent_economii, iban) value (0,3,'HU11RZBR7599355624881527');
+insert into relatie_client_cont(iban, cnp) value('HU11RZBR7599355624881527','0000000000000');
 
+insert into cont_bancar(suma, curent_economii, iban) value (0,4,'FS11RZBR7599355624881527');
+insert into relatie_client_cont(iban, cnp) value('FS11RZBR7599355624881527','0000000000000');
 
+drop procedure if exists insertTransfer;
+delimiter //
+create procedure insertTransfer(
+    sumaIN int,
+    IbanPLecare varchar(40),
+    IbanViraj varchar(40),
+    NumeTitular varchar(20),
+    NumeVirant varchar(20)
+)
+begin
+
+    insert into transferuri_bancare(suma, iban_cont_plecare, iban_cont_viraj, numele_titularului, numele_virant, status, data)
+        value (sumaIN,IbanPLecare,IbanViraj,NumeTitular,NumeVirant,'pending',current_date);
+end //
 
 call addNewBankAccount('hwsdfkajdsgfahsdfasd' , 'jfasdfj')
 

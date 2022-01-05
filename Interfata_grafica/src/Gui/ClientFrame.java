@@ -7,6 +7,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.util.Locale;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -55,6 +56,7 @@ public class ClientFrame extends JFrame{
     /// selectia contului bancar
     public int selectedRowInAccounts = 0;
     public int selectedRowInTranzactii = 0;
+    public int getSelectedRowInFirme = 0;
 
     public ClientFrame(String title) {
         super(title);
@@ -107,16 +109,16 @@ public class ClientFrame extends JFrame{
             tranzactiiView.setLayout(new BoxLayout(tranzactiiView , BoxLayout.LINE_AXIS));
             tranzactiiView.add(scrollTransferuri);
 
-//            String SQL_4 = "CALL getFirme";
-//            CallableStatement getFirme = Main.c.prepareCall(SQL_4);
-//            String[] colsFirme = {"Iban" , "Furnizor"};
-//            var tableModelFirme = AppService.getGenericDataModel(getFirme , colsFirme);
-//            firme = new JTable(tableModelFirme);
-//            firme.setShowGrid(true);
-//            firme.setShowVerticalLines(true);
-//            scrollFirme = new JScrollPane(firme);
-//            companyList.setLayout(new BoxLayout(companyList , BoxLayout.LINE_AXIS));
-//            companyList.add(scrollFirme);
+            String SQL_4 = "CALL getFurnizori";
+            CallableStatement getFirme = Main.c.prepareCall(SQL_4);
+            String[] colsFirme = {"Iban" , "Furnizor"};
+            var tableModelFirme = AppService.getGenericDataModel(getFirme , colsFirme);
+            firme = new JTable(tableModelFirme);
+            firme.setShowGrid(true);
+            firme.setShowVerticalLines(true);
+            scrollFirme = new JScrollPane(firme);
+            companyList.setLayout(new BoxLayout(companyList , BoxLayout.LINE_AXIS));
+            companyList.add(scrollFirme);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -223,8 +225,32 @@ public class ClientFrame extends JFrame{
             }
         });
 
+        firme.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                getSelectedRowInFirme = firme.getSelectedRow();
+                contViraj.setText(firme.getValueAt(getSelectedRowInFirme , 0).toString());
+            }
+        });
+
         sendButton.addActionListener(e -> {
-            System.out.println(selectedRowInTranzactii);
+            String SQL = "Call insertTransfer(?,?,?,?,?)";
+            try {
+                CallableStatement insert = Main.c.prepareCall(SQL);
+                System.out.println(sumaTranzactie.getText());
+                insert.setInt(1 , Integer.parseInt(sumaTranzactie.getText()));
+                insert.setString(2 , contPlecare.getText());
+                insert.setString(3 , contViraj.getText());
+                insert.setString(4 , ClientService.personalData.lastName + " " + ClientService.personalData.firstName);
+                insert.setString(5 , firme.getValueAt(getSelectedRowInFirme , 1).toString());
+                insert.executeQuery();
+                contPlecare.setText("");
+                contViraj.setText("");
+                sumaTranzactie.setText("");
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
         });
 
     }
