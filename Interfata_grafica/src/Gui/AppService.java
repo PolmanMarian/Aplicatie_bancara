@@ -87,11 +87,12 @@ public class AppService {
             e.printStackTrace();
         }
         final int size = ret.size();
-        System.out.println("Asta e de unde trebuie" + size);
+        System.out.println("Asta e de unde trebuie size " + size);
+        System.out.println("Asta e de unde trebuie len" + len);;
         String[][] data = new String[size/len][len];
-        for (int i = 0 ; i < size ; i += len) {
+        for (int i = 0 ; i < size/len ; i++) {
             for (int j = 0 ; j < len ; j++) {
-                data[i/3][j] = ret.get(i + j);
+                data[i][j] = ret.get(i * len + j);
             }
         }
 

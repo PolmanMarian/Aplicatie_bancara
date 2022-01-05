@@ -247,6 +247,13 @@ public class ClientFrame extends JFrame{
                 contPlecare.setText("");
                 contViraj.setText("");
                 sumaTranzactie.setText("");
+                String SQL_3 = "CALL getTransfer(?,?)";
+                CallableStatement getTransfer = Main.c.prepareCall(SQL_3);
+                getTransfer.setString(1 , ClientService.personalData.lastName);
+                getTransfer.setString(2 , ClientService.personalData.firstName);
+                String[] colsTransfer = {"Data" , "Suma" , "Iban plecare" , "Iban destinatie" , "Nume destinatar"};
+                var tableModelTransfer = AppService.getGenericDataModel(getTransfer , colsTransfer);
+                tranzactii.setModel(tableModelTransfer);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
