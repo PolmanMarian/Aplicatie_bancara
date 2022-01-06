@@ -51,7 +51,7 @@ create table if not exists `clienti` (
 -- ----------------------------------------
 create table if not exists `cont_bancar` (
     `suma` integer not null , -- suma de bani din cont
-    `curent_economii` boolean , -- 0 = cont curent , 1 = cont de economii
+    `curent_economii` varchar(40) , -- 0 = cont curent , 1 = cont de economii
     `iban` varchar(40) not null primary key unique
 );
 -- ----------------------------------------

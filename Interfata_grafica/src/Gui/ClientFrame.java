@@ -7,7 +7,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
-import java.util.Locale;
+import java.util.Arrays;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -39,7 +39,7 @@ public class ClientFrame extends JFrame{
     private JTextField contViraj;
     private JTextField contPlecare;
     private JTextField sumaTranzactie;
-    private JComboBox comboBox2;
+    private JComboBox selectiaContuluiTransferGeneric;
     private JTextField selectedAccount;
     private JTextField toSendIban;
     private JTextField toSend;
@@ -64,6 +64,7 @@ public class ClientFrame extends JFrame{
         this.setContentPane(panel1);
         this.pack();
 
+        /// Selectia datelor personale
         ClientService.getPersonalData(AppService.getCurrentUsername() , AppService.getCurrentPassword());
         ClientService.printData();
         NumarDeContract.setText(String.valueOf(ClientService.personalData.contractNumber));
@@ -75,12 +76,14 @@ public class ClientFrame extends JFrame{
 
 
         try {
+            /// Selectia conturilor bancare
             String SQL_2 = "CALL getAccountData(?)";
             CallableStatement to_call = Main.c.prepareCall(SQL_2);
             to_call.setString(1 , ClientService.personalData.cnp);
             String[] cols = {"suma" , "IBAN" , "economii"};
             var content = AppService.getGenericDataModel(to_call ,  cols);
 
+            /// Meniul de plata a factirulor (lista cu conturile bancare curente)
             accountsTable = new JTable(content);
             accountsTable.setShowGrid(true);
             accountsTable.setShowVerticalLines(true);
@@ -88,6 +91,7 @@ public class ClientFrame extends JFrame{
             accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
             accountsList.add(scrollAccounts);
 
+            /// Meniul de vizualizare conturi (lista cu conturile bancare)
             tabelConturi = new JTable(content);
             tabelConturi.setShowGrid(true);
             tabelConturi.setShowVerticalLines(true);
@@ -120,6 +124,9 @@ public class ClientFrame extends JFrame{
             companyList.setLayout(new BoxLayout(companyList , BoxLayout.LINE_AXIS));
             companyList.add(scrollFirme);
 
+            ///Ulitmul menu transfer bancar generic
+
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -149,13 +156,18 @@ public class ClientFrame extends JFrame{
 
         deschidereContButton.addActionListener(e -> {
             if (ClientService.permisiuneDeschidereCont()) {
+                //Alegerea tipului de cont
+                String[] selections = { "De economii" , "Depunere" };
+                Object val = JOptionPane.showInputDialog(Main.currentFrame , "Alege tipul de cont" , "Input" , JOptionPane.INFORMATION_MESSAGE , null , selections , selections[0]);
+                System.out.println(val);
+
                 String newIban = ClientService.nextIban();
                 System.out.println(newIban);
                 String SQL = "call addNewBankAccount(?,?)";
                 try {
                     CallableStatement insert = Main.c.prepareCall(SQL);
-                    insert.setString(2 , newIban);
-                    insert.setString(1 , "Depunere");
+                    insert.setString(1 , newIban);
+                    insert.setString(2 , "Depunere");
                     insert.executeQuery();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -233,6 +245,7 @@ public class ClientFrame extends JFrame{
             }
         });
 
+
         sendButton.addActionListener(e -> {
             String SQL = "Call insertTransfer(?,?,?,?,?)";
             try {
@@ -257,9 +270,23 @@ public class ClientFrame extends JFrame{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-
         });
-
+        accountsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                String SQL_2 = "CALL getAccountData(?)";
+                CallableStatement to_call = null;
+                try {
+                    to_call = Main.c.prepareCall(SQL_2);
+                    to_call.setString(1 , ClientService.personalData.cnp);
+                    String[] cols = {"suma" , "IBAN" , "economii"};
+                    var content = AppService.getGenericDataModel(to_call ,  cols);
+                    accountsTable.setModel(content);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
 

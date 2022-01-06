@@ -59,7 +59,7 @@ create procedure addNewBankAccount(
     in `tip` varchar(40)
 )
 begin
-    insert ignore into `cont_bancar` (suma, curent_economii, iban)
+    insert ignore into `cont_bancar` (suma, iban , curent_economii)
         value (0 , newIban , tip);
 end //
 

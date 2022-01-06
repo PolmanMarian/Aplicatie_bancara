@@ -1,6 +1,7 @@
 package Gui;
 
 import UserServices.AdminService;
+import UserServices.ClientService;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -15,7 +16,7 @@ public class AdminFrame extends JFrame {
     private JPanel transferuri;
     private JPanel displayPanel;
     private JPanel searchBar;
-    private final JTable operatiuni;
+    private JTable operatiuni;
     private final JScrollPane scrollPane;
     private final JTextField searchText;
 
@@ -25,9 +26,24 @@ public class AdminFrame extends JFrame {
         this.setContentPane(panel1);
         this.pack();
 
-        operatiuni = new JTable(AdminService.dataModelTransferuriBancare(""));
-        operatiuni.setShowGrid(true);
-        operatiuni.setShowVerticalLines(true);
+        String SQL_3 = "CALL getTransfer(?,?)";
+        CallableStatement getTransfer = null;
+//        operatiuni = null;
+        try {
+            getTransfer = Main.c.prepareCall(SQL_3);
+            getTransfer.setString(1 , ClientService.personalData.lastName);
+            getTransfer.setString(2 , ClientService.personalData.firstName);
+            String[] colsTransfer = {"Data" , "Suma" , "Iban plecare" , "Iban destinatie" , "Nume destinatar"};
+            var tableModelTransfer = AppService.getGenericDataModel(getTransfer , colsTransfer);
+            operatiuni = new JTable(tableModelTransfer);
+            operatiuni.setShowGrid(true);
+            operatiuni.setShowVerticalLines(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+//        operatiuni = new JTable();
+//        operatiuni.setShowGrid(true);
+//        operatiuni.setShowVerticalLines(true);
         String [] cols = {"iban_cont_plecare" , "iban_cont_viraj" , "numele_titularului" , "id" , "status"};
 
         operatiuni.getModel().addTableModelListener(new TableModelListener() {
