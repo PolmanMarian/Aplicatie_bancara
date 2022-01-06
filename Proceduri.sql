@@ -201,3 +201,24 @@ begin
     insert into transferuri_bancare(suma, iban_cont_plecare, iban_cont_viraj, numele_titularului, numele_virant, status, data)
         value (sumaIN,IbanPLecare,IbanViraj,NumeTitular,NumeVirant,'pending',current_date);
 end //
+
+drop procedure if exists getDepozite;
+delimiter //
+create procedure getDepozite(
+    cnpIn char(13)
+)
+begin
+    select suma, data, dobanda from depozite where cnp=cnpIn;
+end //
+
+
+drop procedure if exists insertDepozit;
+delimiter //
+create procedure insertDepozit(
+    sumaIn integer,
+    cnpIn char(13),
+    dobandaIn integer
+)
+begin
+    insert into depozite(suma, status, data, cnp, dobanda) value (sumaIn,'Pending',CURRENT_DATE,cnpIn,dobandaIn);
+end //

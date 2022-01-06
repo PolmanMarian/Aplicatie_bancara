@@ -170,14 +170,14 @@ create table if not exists `dobanzi_depozite`(
 -- Depozite
 -- -----------------------------------------
 create table if not exists `depozite` (
-    `id` integer not null unique primary key,
+    `id` integer not null unique auto_increment primary key,
     `suma` integer not null,
-    `status` integer not null,
+    `status` varchar(40) not null,
     `data` datetime,
 
     `cnp` char(13),
     `dobanda` integer not null,
-    constraint fk_cnp foreign key (`cnp`) references clienti(cnp),
+    constraint fk_cnp foreign key (`cnp`) references users(cnp),
     constraint fk_dobanda foreign key (`dobanda`) references dobanzi_depozite(id)
 );
 insert into dobanzi_depozite(id, descirere, procent) values(1,'30 zile depozit',5);
