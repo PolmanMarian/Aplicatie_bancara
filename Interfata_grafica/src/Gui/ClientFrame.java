@@ -157,7 +157,7 @@ public class ClientFrame extends JFrame{
         deschidereContButton.addActionListener(e -> {
             if (ClientService.permisiuneDeschidereCont()) {
                 //Alegerea tipului de cont
-                String[] selections = { "De economii" , "Depunere" };
+                String[] selections = { "De economii" , "Curent" };
                 Object val = JOptionPane.showInputDialog(Main.currentFrame , "Alege tipul de cont" , "Input" , JOptionPane.INFORMATION_MESSAGE , null , selections , selections[0]);
                 System.out.println(val);
 
@@ -167,7 +167,7 @@ public class ClientFrame extends JFrame{
                 try {
                     CallableStatement insert = Main.c.prepareCall(SQL);
                     insert.setString(1 , newIban);
-                    insert.setString(2 , "Depunere");
+                    insert.setString(2 , (String)val);
                     insert.executeQuery();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -271,6 +271,7 @@ public class ClientFrame extends JFrame{
                 ex.printStackTrace();
             }
         });
+
         accountsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {

@@ -17,7 +17,6 @@ value
     (3 , 'administrator');
 -- ----------------------------------------
 
-
 -- tabela de useri din care se disting : clienti(cod:1) , angajati(cod:2), administartori(cod:3)
 -- ----------------------------------------
 create table if not exists `users`(
@@ -151,9 +150,52 @@ create table if not exists `transferuri_bancare` (
     `id` integer unique primary key auto_increment ,
     `status` varchar(10), -- statusul transferului ("CREATED" , "SUCCESSFUL" , "ERROR")
     `data` date,
+    `responsabilNume` varchar(40),
     constraint fk_iban_cont_plecare_transfer foreign key (`iban_cont_plecare`) references cont_bancar(`iban`) on delete cascade,
     constraint fk_iban_cont_viraj_transfer foreign key (`iban_cont_viraj`) references cont_bancar(`iban`) on delete cascade
 );
-
 -- ----------------------------------------
 
+
+-- Dobanzi
+-- -----------------------------------------
+create table if not exists `dobanzi_depozite`(
+    `id` integer not null unique primary key,
+    `descirere` varchar(200),
+    `procent` int
+);
+-- -----------------------------------------
+
+
+-- Depozite
+-- -----------------------------------------
+create table if not exists `depozite` (
+    `id` integer not null unique primary key,
+    `suma` integer not null,
+    `status` integer not null,
+    `data` datetime,
+
+    `cnp` char(13),
+    `dobanda` integer not null,
+    constraint fk_cnp foreign key (`cnp`) references clienti(cnp),
+    constraint fk_dobanda foreign key (`dobanda`) references dobanzi_depozite(id)
+);
+insert into dobanzi_depozite(id, descirere, procent) values(1,'30 zile depozit',5);
+insert into dobanzi_depozite(id, descirere, procent) values(2,'90 zile depozit',10);
+insert into dobanzi_depozite(id, descirere, procent) values(3,'180 zile depozit',15);
+-- ----------------------------------------
+
+-- Comisioane
+-- ----------------------------------------
+create table if not exists `taxe_comisioane` (
+    `id` integer not null auto_increment primary key ,
+    `descriere` varchar(100),
+    `procentaj` integer
+);
+
+insert into `taxe_comisioane` (descriere, procentaj) values
+('Lichidare cont economii' , 2),
+('Dobanda creare cont economii' , 5),
+('Prag' , 500000),
+('Transfer alta banca' , 1);
+-- ----------------------------------------
