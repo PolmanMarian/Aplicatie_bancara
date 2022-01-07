@@ -136,6 +136,14 @@ begin
     select data, suma, iban_cont_plecare, iban_cont_viraj, numele_virant, status from transferuri_bancare
     where numele_titularului=concat(nume,' ',prenume) order by data;
 end //
+
+drop procedure if exists getAllTransfer;
+delimiter //
+create procedure getAllTransfer(
+)
+begin
+    select data, suma, iban_cont_plecare, iban_cont_viraj, numele_virant, status from transferuri_bancare order by data;
+end //
 -- -----------------------------------------
 
 -- Furnizorii de servicii
@@ -287,3 +295,10 @@ end//
 # insert into cont_bancar(suma, curent_economii, iban) value (2000,'curent','0000 0000 0000 0000');
 # insert into relatie_client_cont(iban, cnp) value('0000 0000 0000 0000','5001210060437');
 
+drop procedure if exists getAllAngajati;
+delimiter //
+create procedure getAllAngajati()
+begin
+
+    select norma, salariul,sucursala from angajat;
+end //

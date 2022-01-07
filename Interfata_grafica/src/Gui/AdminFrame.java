@@ -16,9 +16,15 @@ public class AdminFrame extends JFrame {
     private JPanel transferuri;
     private JPanel displayPanel;
     private JPanel searchBar;
+    private JPanel tabelulAngajati;
+    private JPanel searchBar2;
+    private JTextField textField1;
     private JTable operatiuni;
     private final JScrollPane scrollPane;
     private final JTextField searchText;
+
+    private JTable angajatiTabel;
+    private JScrollPane angajatiScroll;
 
     public AdminFrame(String title) {
         super(title);
@@ -26,13 +32,12 @@ public class AdminFrame extends JFrame {
         this.setContentPane(panel1);
         this.pack();
 
-        String SQL_3 = "CALL getTransfer(?,?)";
+        String SQL_3 = "CALL getAllTransfer";
         CallableStatement getTransfer = null;
-//        operatiuni = null;
         try {
             getTransfer = Main.c.prepareCall(SQL_3);
-            getTransfer.setString(1 , ClientService.personalData.lastName);
-            getTransfer.setString(2 , ClientService.personalData.firstName);
+//            getTransfer.setString(1 , ClientService.personalData.lastName);
+//            getTransfer.setString(2 , ClientService.personalData.firstName);
             String[] colsTransfer = {"Data" , "Suma" , "Iban plecare" , "Iban destinatie" , "Nume destinatar"};
             var tableModelTransfer = AppService.getGenericDataModel(getTransfer , colsTransfer);
             operatiuni = new JTable(tableModelTransfer);
@@ -45,6 +50,25 @@ public class AdminFrame extends JFrame {
 //        operatiuni.setShowGrid(true);
 //        operatiuni.setShowVerticalLines(true);
         String [] cols = {"iban_cont_plecare" , "iban_cont_viraj" , "numele_titularului" , "id" , "status"};
+
+
+        /// gestionarea angajatilor
+        String SQL_4 = "call getAllAngajati";
+        try {
+            CallableStatement sA = Main.c.prepareCall(SQL_4);
+            String[] atributeAngajati = {"norma" , "salariu" , "sucursala"};
+            var modelAngajati = AppService.getGenericDataModel(sA , atributeAngajati);
+            angajatiTabel = new JTable(modelAngajati);
+            angajatiTabel.setShowVerticalLines(true);
+            angajatiTabel.setShowGrid(true);
+            angajatiScroll = new JScrollPane(angajatiTabel);
+            tabelulAngajati.setLayout(new BoxLayout(tabelulAngajati
+                    , BoxLayout.LINE_AXIS));
+            tabelulAngajati.add(angajatiScroll);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         operatiuni.getModel().addTableModelListener(new TableModelListener() {
             @Override
@@ -74,9 +98,15 @@ public class AdminFrame extends JFrame {
 
         searchText.addActionListener(e -> {
             String criteriu = searchText.getText();
-            String statement = "select * from transferuri_bancare " +
-                    "where concat(iban_cont_plecare , iban_cont_viraj , numele_titularului , id , `status`) like '%"+ criteriu +"%';";
-            operatiuni.setModel(AdminService.dataModelTransferuriBancare(statement));
+            String statement = "select data, suma, iban_cont_plecare, iban_cont_viraj, numele_virant, status from transferuri_bancare " +
+                    "where concat(data , suma , iban_cont_plecare , iban_cont_viraj , numele_titularului , id , status) like '%"+ criteriu +"%';";
+            String[] colsTransfer = {"Data" , "Suma" , "Iban plecare" , "Iban destinatie" , "Nume destinatar"};
+            try {
+                CallableStatement ceva = Main.c.prepareCall(statement);
+                operatiuni.setModel(AppService.getGenericDataModel(ceva , colsTransfer));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
 
         logoutButton.addActionListener( e -> {
