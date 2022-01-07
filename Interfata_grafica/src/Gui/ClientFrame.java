@@ -7,6 +7,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -21,7 +23,6 @@ public class ClientFrame extends JFrame{
     private JLabel Prenume;
     private JLabel CNP;
     private JLabel NumarDeTelefon;
-
 
     ///conturi bancare
     private JPanel conturi;
@@ -38,7 +39,7 @@ public class ClientFrame extends JFrame{
     private JTextField contViraj;
     private JTextField contPlecare;
     private JTextField sumaTranzactie;
-    private JComboBox selectiaContuluiTransferGeneric;
+    private JComboBox<String> selectiaContuluiTransferGeneric;
     private JTextField selectedAccount;
     private JTextField toSendIban;
     private JTextField toSend;
@@ -54,7 +55,7 @@ public class ClientFrame extends JFrame{
     private JScrollPane scrollTransferuri;
     private JScrollPane scrollFirme;
     private JTable accountsTable;
-
+    private JScrollPane scrollAccounts;
     private JTable depoziteTable;
     private JScrollPane depoziteList;
 
@@ -62,6 +63,29 @@ public class ClientFrame extends JFrame{
     public int selectedRowInAccounts = 0;
     public int selectedRowInTranzactii = 0;
     public int getSelectedRowInFirme = 0;
+    public int selectedDep = 0;
+
+    public void update_conturi(JTable to_update) {
+        String SQL_2 = "CALL getAccountData(?)";
+        CallableStatement to_call = null;
+        try {
+            to_call = Main.c.prepareCall(SQL_2);
+            to_call.setString(1 , ClientService.personalData.cnp);
+            String[] cols = {"suma" , "IBAN" , "economii"};
+            var content = AppService.getGenericDataModel(to_call ,  cols);
+            to_update.setModel(content);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void update_conturi_combo(JComboBox ceva) {
+        ceva.removeAllItems();
+        int n = accountsTable.getRowCount();
+        for(int i = 0 ; i < n ; ++i) {
+            ceva.addItem(accountsTable.getValueAt(i , 1).toString());
+        }
+    }
 
     public ClientFrame(String title) {
         super(title);
@@ -92,7 +116,7 @@ public class ClientFrame extends JFrame{
             accountsTable = new JTable(content);
             accountsTable.setShowGrid(true);
             accountsTable.setShowVerticalLines(true);
-            JScrollPane scrollAccounts = new JScrollPane(accountsTable);
+            scrollAccounts = new JScrollPane(accountsTable);
             accountsList.setLayout(new BoxLayout(accountsList, BoxLayout.LINE_AXIS));
             accountsList.add(scrollAccounts);
 
@@ -133,7 +157,7 @@ public class ClientFrame extends JFrame{
             String SQL_5 = "call getDepozite(?)";
             CallableStatement getdep = Main.c.prepareCall(SQL_5);
             getdep.setString(1 , ClientService.personalData.cnp);
-            String[] colsDepozite = {"Suma" , "Data" , "Dobanda"};
+            String[] colsDepozite = {"Id" , "Suma" , "Data" , "Dobanda"};
             var tableModel = AppService.getGenericDataModel(getdep , colsDepozite);
             depoziteTable = new JTable(tableModel);
             depoziteTable.setShowGrid(true);
@@ -141,7 +165,19 @@ public class ClientFrame extends JFrame{
             depoziteList = new JScrollPane(depoziteTable);
             depozite.setLayout(new BoxLayout(depozite , BoxLayout.LINE_AXIS));
             depozite.add(depoziteList);
+
             ///Ulitmul menu transfer bancar generic
+            String[] conturiCurente;
+            ArrayList<String> helper = new ArrayList<String>();
+            final int n = accountsTable.getRowCount();
+            for(int i = 0 ; i < n ; ++i) {
+                    helper.add(accountsTable.getValueAt(i , 1).toString());
+            }
+            conturiCurente = new String[helper.size()];
+            for (int i = 0 ; i < helper.size() ; ++i) {
+                conturiCurente[i] = helper.get(i);
+                selectiaContuluiTransferGeneric.addItem(helper.get(i));
+            }
 
 
         } catch (SQLException ex) {
@@ -156,9 +192,9 @@ public class ClientFrame extends JFrame{
 
         solicitareCardBancarButton.addActionListener(e -> {
             String currentIban = tabelConturi.getValueAt(selectedRowInAccounts , 1).toString();
-            System.out.println(currentIban);
+//            System.out.println(currentIban);
             boolean ok = ClientService.permnisiuneSolicitareCardBancar(currentIban);
-            System.out.println(ok);
+//            System.out.println(ok);
             ClientService.solicitareCardPopUpMenu(Main.currentFrame , ok);
             if (ok) {
                 CallableStatement adaugare = null;
@@ -176,10 +212,10 @@ public class ClientFrame extends JFrame{
                 //Alegerea tipului de cont
                 String[] selections = { "De economii" , "Curent" };
                 Object val = JOptionPane.showInputDialog(Main.currentFrame , "Alege tipul de cont" , "Input" , JOptionPane.INFORMATION_MESSAGE , null , selections , selections[0]);
-                System.out.println(val);
+//                System.out.println(val);
 
                 String newIban = ClientService.nextIban();
-                System.out.println(newIban);
+//                System.out.println(newIban);
                 String SQL = "call addNewBankAccount(?,?)";
                 try {
                     CallableStatement insert = Main.c.prepareCall(SQL);
@@ -190,7 +226,6 @@ public class ClientFrame extends JFrame{
                     ex.printStackTrace();
                 }
 
-                System.out.println(newIban);
                 String SQL1 = "call associateCnpIban(? , ?)";
                 CallableStatement bound = null;
                 try {
@@ -216,10 +251,12 @@ public class ClientFrame extends JFrame{
                 System.out.println("are deja 5");
                 AppService.gengericPopUp(Main.currentFrame , "NU se poat deschide un alt cont");
             }
+            this.update_conturi(accountsTable);
+            this.update_conturi_combo(selectiaContuluiTransferGeneric);
         });
 
         lichidareContButton.addActionListener(e->{
-            String currentIban= tabelConturi.getValueAt(selectedRowInAccounts,1).toString();
+            String currentIban = tabelConturi.getValueAt(selectedRowInAccounts,1).toString();
             String SQL = "CALL deleteIban(?)";
             try {
                 CallableStatement delete = Main.c.prepareCall(SQL);
@@ -237,6 +274,8 @@ public class ClientFrame extends JFrame{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            this.update_conturi(accountsTable);
+            this.update_conturi_combo(selectiaContuluiTransferGeneric);
         });
 
         tabelConturi.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -262,12 +301,10 @@ public class ClientFrame extends JFrame{
             }
         });
 
-
         sendButton.addActionListener(e -> {
             String SQL = "Call insertTransfer(?,?,?,?,?)";
             try {
                 CallableStatement insert = Main.c.prepareCall(SQL);
-                System.out.println(sumaTranzactie.getText());
                 insert.setInt(1 , Integer.parseInt(sumaTranzactie.getText()));
                 insert.setString(2 , contPlecare.getText());
                 insert.setString(3 , contViraj.getText());
@@ -286,23 +323,6 @@ public class ClientFrame extends JFrame{
                 tranzactii.setModel(tableModelTransfer);
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }
-        });
-
-        accountsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                String SQL_2 = "CALL getAccountData(?)";
-                CallableStatement to_call = null;
-                try {
-                    to_call = Main.c.prepareCall(SQL_2);
-                    to_call.setString(1 , ClientService.personalData.cnp);
-                    String[] cols = {"suma" , "IBAN" , "economii"};
-                    var content = AppService.getGenericDataModel(to_call ,  cols);
-                    accountsTable.setModel(content);
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
             }
         });
 
@@ -329,178 +349,71 @@ public class ClientFrame extends JFrame{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-
             String SQL_5 = "call getDepozite(?)";
             CallableStatement getdep = null;
             try {
                 getdep = Main.c.prepareCall(SQL_5);
                 getdep.setString(1 , ClientService.personalData.cnp);
-                String[] colsDepozite = {"Suma" , "Data" , "Dobanda"};
+                String[] colsDepozite = {"Id" , "Suma" , "Data" , "Dobanda"};
                 var tableModel = AppService.getGenericDataModel(getdep , colsDepozite);
                 depoziteTable.setModel(tableModel);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        depoziteTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedDep = depoziteTable.getSelectedRow();
+            }
+        });
+
+        lichidareDepozitButton.addActionListener(e -> {
+            String ibanDestinatie = "";
+            Integer idDepozit = 0;
+            idDepozit = Integer.parseInt(depoziteTable.getValueAt(selectedDep , 0).toString());
+            String[] conturiCurente;
+            ArrayList<String> helper = new ArrayList<String>();
+            final int n = accountsTable.getRowCount();
+            for(int i = 0 ; i < n ; ++i) {
+                if (accountsTable.getValueAt(i , 2).toString().equals("Curent")) {
+                    helper.add(accountsTable.getValueAt(i , 1).toString());
+                }
+            }
+            conturiCurente = new String[helper.size()];
+            for (int i = 0 ; i < helper.size() ; ++i) {
+                conturiCurente[i] = helper.get(i);
+            }
+            Object input = JOptionPane.showInputDialog(Main.currentFrame,
+                    "Alege contul curent in care vrei sa-ti fie restituiti banii" ,
+                    "Input " , JOptionPane.PLAIN_MESSAGE , null , conturiCurente , conturiCurente[0]);
+            ibanDestinatie = (String)input;
+            System.out.println(ibanDestinatie + idDepozit);
+            String SQL = "call lichidareDepozit(? , ?)";
+            try {
+                CallableStatement li = Main.c.prepareCall(SQL);
+                li.setInt(String.valueOf(1 , idDepozit));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
 
         });
 
-
-        lichidareDepozitButton.addActionListener(e -> {
-            String SQL = "deleteDepozit(?)";
-
+        clearButton.addActionListener(e -> {
+            selectedAccount.setText("");
+            toSendIban.setText("");
+            toSendName.setText("");
+            toSend.setText("");
         });
-    }
 
+        selectiaContuluiTransferGeneric.addActionListener(e -> {
+            selectedAccount.setText(Objects.requireNonNull(selectiaContuluiTransferGeneric.getSelectedItem()).toString());
+        });
 
-    public JTabbedPane getTabbedPane1() {
-        return tabbedPane1;
-    }
-
-    public void setTabbedPane1(JTabbedPane tabbedPane1) {
-        this.tabbedPane1 = tabbedPane1;
-    }
-
-    public JPanel getPanel1() {
-        return panel1;
-    }
-
-    public void setPanel1(JPanel panel1) {
-        this.panel1 = panel1;
-    }
-
-    public JButton getLogutButton() {
-        return logutButton;
-    }
-
-    public void setLogutButton(JButton logutButton) {
-        this.logutButton = logutButton;
-    }
-
-    public JPanel getPersonalData() {
-        return personalData;
-    }
-
-    public void setPersonalData(JPanel personalData) {
-        this.personalData = personalData;
-    }
-
-    public JLabel getNumarDeContract() {
-        return NumarDeContract;
-    }
-
-    public void setNumarDeContract(JLabel numarDeContract) {
-        NumarDeContract = numarDeContract;
-    }
-
-    public JLabel getAdresa() {
-        return Adresa;
-    }
-
-    public void setAdresa(JLabel adresa) {
-        Adresa = adresa;
-    }
-
-    public JLabel getNume() {
-        return Nume;
-    }
-
-    public void setNume(JLabel nume) {
-        Nume = nume;
-    }
-
-    public JLabel getPrenume() {
-        return Prenume;
-    }
-
-    public void setPrenume(JLabel prenume) {
-        Prenume = prenume;
-    }
-
-    public JLabel getCNP() {
-        return CNP;
-    }
-
-    public void setCNP(JLabel CNP) {
-        this.CNP = CNP;
-    }
-
-    public JLabel getNumarDeTelefon() {
-        return NumarDeTelefon;
-    }
-
-    public void setNumarDeTelefon(JLabel numarDeTelefon) {
-        NumarDeTelefon = numarDeTelefon;
-    }
-
-    public JPanel getConturi() {
-        return conturi;
-    }
-
-    public void setConturi(JPanel conturi) {
-        this.conturi = conturi;
-    }
-
-    public JPanel getVizualizareConturi() {
-        return vizualizareConturi;
-    }
-
-    public void setVizualizareConturi(JPanel vizualizareConturi) {
-        this.vizualizareConturi = vizualizareConturi;
-    }
-
-    public JPanel getButoaneCont() {
-        return butoaneCont;
-    }
-
-    public void setButoaneCont(JPanel butoaneCont) {
-        this.butoaneCont = butoaneCont;
-    }
-
-    public JButton getSolicitareCardBancarButton() {
-        return solicitareCardBancarButton;
-    }
-
-    public void setSolicitareCardBancarButton(JButton solicitareCardBancarButton) {
-        this.solicitareCardBancarButton = solicitareCardBancarButton;
-    }
-
-    public JButton getDeschidereContButton() {
-        return deschidereContButton;
-    }
-
-    public void setDeschidereContButton(JButton deschidereContButton) {
-        this.deschidereContButton = deschidereContButton;
-    }
-
-    public JButton getLichidareContButton() {
-        return lichidareContButton;
-    }
-
-    public void setLichidareContButton(JButton lichidareContButton) {
-        this.lichidareContButton = lichidareContButton;
-    }
-
-    public JTable getTranzactii() {
-        return tranzactii;
-    }
-
-    public void setTranzactii(JTable tranzactii) {
-        this.tranzactii = tranzactii;
-    }
-
-    public JTable getTabelConturi() {
-        return tabelConturi;
-    }
-
-    public void setTabelConturi(JTable tabelConturi) {
-        this.tabelConturi = tabelConturi;
-    }
-
-    public JScrollPane getScrollConturi() {
-        return scrollConturi;
-    }
-
-    public void setScrollConturi(JScrollPane scrollConturi) {
-        this.scrollConturi = scrollConturi;
+        sendButton1.addActionListener(e -> {
+            String SQL = "insert pentru tranzactii + update accounts";
+            clearButton.doClick();
+        });
     }
 }
