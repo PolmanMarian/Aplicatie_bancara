@@ -208,7 +208,7 @@ create procedure getDepozite(
     cnpIn char(13)
 )
 begin
-    select suma, data, dobanda from depozite where cnp=cnpIn;
+    select id , suma, data, dobanda from depozite where cnp=cnpIn;
 end //
 
 
@@ -222,3 +222,64 @@ create procedure insertDepozit(
 begin
     insert into depozite(suma, status, data, cnp, dobanda) value (sumaIn,'Pending',CURRENT_DATE,cnpIn,dobandaIn);
 end //
+
+
+drop procedure if exists lichidareDepozit;
+delimiter //
+create procedure lichidareDepozit(
+    idDepozit int,
+    ibanContCurent varchar(40)
+)
+begin
+
+    DECLARE dobandaIn int;
+    DECLARE dobandaProcente int;
+    DECLARE dobandaZile int;
+    DECLARE dataDobanda date;
+    DECLARE zile int;
+
+    DECLARE sumaIn int;
+
+    set sumaIn=100;
+
+    select data into dataDobanda
+    from depozite where id=idDepozit;
+
+    select suma into sumaIn
+    from depozite where id=idDepozit;
+
+    select dobanda into dobandaIn
+    from depozite where id=idDepozit;
+
+    select procent into dobandaProcente
+    from dobanzi_depozite where id=dobandaIn;
+
+    case dobandaIn
+            when 1 then
+        set dobandaZile=30;
+            when 2 then
+        set dobandaZile=90;
+            when 3 then
+        set dobandaZile=180;
+    end case;
+
+    set zile=datediff(current_date(),dataDobanda)-dobandaZile;
+
+    if (zile>0)
+        then
+            set sumaIn=sumaIN+sumaIN*dobandaProcente/100;
+    end if;
+
+    update cont_bancar
+        set suma=suma+sumaIn
+    where iban = ibanContCurent;
+
+    delete from depozite where id=idDepozit;
+end//
+
+# call lichidareDepozit(20,'0000 0000 0000 0000');
+
+# insert into depozite(id, suma, status, data, cnp, dobanda) value(20,200,'pending','2000-10-12',5001210060437,2);
+# insert into cont_bancar(suma, curent_economii, iban) value (2000,'curent','0000 0000 0000 0000');
+# insert into relatie_client_cont(iban, cnp) value('0000 0000 0000 0000','5001210060437');
+
