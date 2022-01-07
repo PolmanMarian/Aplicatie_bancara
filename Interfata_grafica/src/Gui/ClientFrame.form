@@ -579,6 +579,14 @@
                   <text value="Suma"/>
                 </properties>
               </component>
+              <component id="ad8ce" class="javax.swing.JButton" binding="updateButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Update"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>

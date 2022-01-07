@@ -50,6 +50,7 @@ public class ClientFrame extends JFrame{
     private JPanel depozite;
     private JButton deschidereDepozitButton;
     private JButton lichidareDepozitButton;
+    private JButton updateButton;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
     private JScrollPane scrollTransferuri;
@@ -79,11 +80,25 @@ public class ClientFrame extends JFrame{
         }
     }
 
-    public void update_conturi_combo(JComboBox ceva) {
-        ceva.removeAllItems();
-        int n = accountsTable.getRowCount();
-        for(int i = 0 ; i < n ; ++i) {
-            ceva.addItem(accountsTable.getValueAt(i , 1).toString());
+//    public void update_conturi_combo() {
+//        selectiaContuluiTransferGeneric.removeAllItems();
+//        int n = accountsTable.getRowCount();
+//        for(int i = 0 ; i < n ; ++i) {
+//            selectiaContuluiTransferGeneric.addItem(accountsTable.getValueAt(i , 1).toString());
+//        }
+//    }
+
+    public void update_depozite() {
+        String SQL_5 = "call getDepozite(?)";
+        CallableStatement getdep = null;
+        try {
+            getdep = Main.c.prepareCall(SQL_5);
+            getdep.setString(1 , ClientService.personalData.cnp);
+            String[] colsDepozite = {"Id" , "Suma" , "Data" , "Dobanda"};
+            var tableModel = AppService.getGenericDataModel(getdep , colsDepozite);
+            depoziteTable.setModel(tableModel);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -178,8 +193,6 @@ public class ClientFrame extends JFrame{
                 conturiCurente[i] = helper.get(i);
                 selectiaContuluiTransferGeneric.addItem(helper.get(i));
             }
-
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -252,7 +265,6 @@ public class ClientFrame extends JFrame{
                 AppService.gengericPopUp(Main.currentFrame , "NU se poat deschide un alt cont");
             }
             this.update_conturi(accountsTable);
-            this.update_conturi_combo(selectiaContuluiTransferGeneric);
         });
 
         lichidareContButton.addActionListener(e->{
@@ -275,7 +287,6 @@ public class ClientFrame extends JFrame{
                 ex.printStackTrace();
             }
             this.update_conturi(accountsTable);
-            this.update_conturi_combo(selectiaContuluiTransferGeneric);
         });
 
         tabelConturi.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -393,11 +404,14 @@ public class ClientFrame extends JFrame{
             String SQL = "call lichidareDepozit(? , ?)";
             try {
                 CallableStatement li = Main.c.prepareCall(SQL);
-                li.setInt(String.valueOf(1 , idDepozit));
+                li.setInt(1 , idDepozit);
+                li.setString(2 , ibanDestinatie);
+                li.executeQuery();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-
+            this.update_depozite();
+            this.update_conturi(tabelConturi);
         });
 
         clearButton.addActionListener(e -> {
@@ -412,8 +426,49 @@ public class ClientFrame extends JFrame{
         });
 
         sendButton1.addActionListener(e -> {
-            String SQL = "insert pentru tranzactii + update accounts";
+            String SQL = "call insertTransfer(? , ? , ? , ? , ?)";
+            String selAc = selectedAccount.getText();
+            String toAc = toSendIban.getText();
+            String toName = toSendName.getText();
+            Integer money = Integer.valueOf(toSend.getText());
             clearButton.doClick();
+            CallableStatement makeTransaction = null;
+            try {
+                makeTransaction = Main.c.prepareCall(SQL);
+                makeTransaction.setInt(1 , money);
+                makeTransaction.setString(2 , selAc);
+                makeTransaction.setString(3 , toAc);
+                makeTransaction.setString(4 , ClientService.personalData.lastName + " " + ClientService.personalData.firstName);
+                makeTransaction.setString(5 , toName);
+                makeTransaction.executeQuery();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            String SQL_3 = "CALL getTransfer(?,?)";
+            CallableStatement getTransfer = null;
+            try {
+                getTransfer = Main.c.prepareCall(SQL_3);
+                getTransfer.setString(1 , ClientService.personalData.lastName);
+                getTransfer.setString(2 , ClientService.personalData.firstName);
+                String[] colsTransfer = {"Data" , "Suma" , "Iban plecare" , "Iban destinatie" , "Nume destinatar"};
+                var tableModelTransfer = AppService.getGenericDataModel(getTransfer , colsTransfer);
+                tranzactii.setModel(tableModelTransfer);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        updateButton.addActionListener(e -> {
+            final int n = tabelConturi.getRowCount();
+            String[] helper = new String[n];
+            System.out.println(n);
+            for(int i = 0 ; i < n ; ++i) {
+                helper[i] = tabelConturi.getValueAt(i , 1).toString();
+            }
+            selectiaContuluiTransferGeneric.removeAllItems();
+            for (int i = 0 ; i < n ; ++i) {
+                selectiaContuluiTransferGeneric.addItem(helper[i]);
+            }
         });
     }
 }

@@ -198,17 +198,21 @@ create procedure insertTransfer(
     NumeVirant varchar(20)
 )
 begin
-    insert into transferuri_bancare(suma, iban_cont_plecare, iban_cont_viraj, numele_titularului, numele_virant, status, data)
-        value (sumaIN,IbanPLecare,IbanViraj,NumeTitular,NumeVirant,'pending',current_date);
-end //
 
-drop procedure if exists getDepozite;
-delimiter //
-create procedure getDepozite(
-    cnpIn char(13)
-)
-begin
-    select id , suma, data, dobanda from depozite where cnp=cnpIn;
+     DECLARE sumaCont integer;
+
+     select suma into sumaCont
+     from cont_bancar where iban=ibanPlecare;
+
+
+     if(sumaIn<=sumaCont)
+        then
+        insert into transferuri_bancare(suma, iban_cont_plecare, iban_cont_viraj, numele_titularului, numele_virant, status, data)
+        value (sumaIN,IbanPLecare,IbanViraj,NumeTitular,NumeVirant,'pending',current_date);
+        update cont_bancar
+            set suma=suma-sumaIn
+        where iban=ibanPlecare;
+    end if;
 end //
 
 
