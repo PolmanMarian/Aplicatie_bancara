@@ -142,7 +142,7 @@ delimiter //
 create procedure getAllTransfer(
 )
 begin
-    select data, suma, iban_cont_plecare, iban_cont_viraj, numele_virant, status from transferuri_bancare order by data;
+    select data, suma, iban_cont_plecare, iban_cont_viraj, numele_virant, status , id from transferuri_bancare order by data;
 end //
 -- -----------------------------------------
 
@@ -297,8 +297,119 @@ end//
 
 drop procedure if exists getAllAngajati;
 delimiter //
-create procedure getAllAngajati()
+create procedure getAllAngajati(
+)
+begin
+    select concat(u.nume,' ',u.prenume) as nume , a.salariul, a.norma , a.sucursala , a.departament , a.iban_salariu from angajat as a
+        join users as u where u.cnp = a.cnp;
+end //
+
+
+-- GetFavorite
+drop procedure if exists getFavorite;
+delimiter //
+create procedure getFavorite(
+    numele_titularuluiIn varchar(40)
+)
+begin
+#     select * from transferuri_bancare group by numele_virant;
+    select distinct numele_virant , iban_cont_viraj from transferuri_bancare
+      where numele_titularului = numele_titularuluiIn
+#     group by numele_virant
+     order by numele_virant
+    limit 5;
+end //
+call getFavorite('Furnizor Servicii');
+
+
+drop procedure if exists plataSalariu;
+delimiter //
+create procedure plataSalariu(
+    ibanAngajat varchar(40),
+    salariu int,
+    numeAngajat varchar(40)
+)
 begin
 
-    select norma, salariul,sucursala from angajat;
+    insert into
+        transferuri_bancare
+        (suma, iban_cont_plecare, iban_cont_viraj, numele_titularului, numele_virant, status, data, responsabilNume) value
+        (salariu,'B00S 1234 12345',ibanAngajat,'Administrator Banca',numeAngajat,'aproved',CURRENT_DATE,'Administrator Banca');
+    update cont_bancar
+        set suma=suma+salariu
+    where iban=ibanAngajat;
+
 end //
+
+call plataSalariu('DF32 2311 3312 3123 1233' , 1000 , 'AltVasile Dijkstra');
+
+-- GetAllUsers
+drop procedure if exists getAllUsers;
+delimiter //
+create procedure getAllUsers()
+begin
+    select concat(nume,' ',prenume) as nume,adresa,numar_de_telefon from users
+    where cnp != '0000000000000'
+        order by cnp;
+end //
+
+drop procedure if exists getCereri;
+delimiter //
+create procedure getCereri()
+begin
+    select iban,aprobare_admin,aprobare_angajat as aprobare from solicitari_card
+    order by aprobare;
+end //
+
+-- GetAllAcounts
+drop procedure if exists getAllAcounts;
+delimiter //
+create procedure getAllAcounts()
+begin
+    select u.cnp,concat(u.nume,' ',u.prenume),cb.iban, cb.suma from cont_bancar as cb
+        join relatie_client_cont rcc on cb.iban = rcc.iban
+        join users u on u.cnp=rcc.cnp
+    where u.cnp != '0000000000000'
+    order by cnp;
+end //
+
+call getAllAcounts();
+
+
+drop procedure if exists getTaxes;
+delimiter //
+create procedure getTaxes()
+begin
+    select * from taxe_comisioane;
+end //
+
+call getTaxes();
+
+drop procedure if exists getAllDepozite;
+delimiter //
+create procedure getAllDepozite(
+)
+begin
+    select * from depozite;
+end //
+-- GetAllUsersWithPasswords
+drop procedure if exists getAllUsersWithPasswords;
+delimiter //
+create procedure getAllUsersWithPassWords()
+begin
+    select * from users
+    where cnp != '0000000000000'
+        order by cnp;
+end //
+
+-- GetAllUsers
+drop procedure if exists getAllUsers;
+delimiter //
+create procedure getAllUsers()
+begin
+    select concat(nume,' ',prenume) as nume,adresa,numar_de_telefon from users
+    where cnp != '0000000000000'
+        order by cnp;
+end //
+
+call getAllUsersWithPassWords();
