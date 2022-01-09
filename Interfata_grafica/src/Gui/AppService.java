@@ -59,9 +59,17 @@ public class AppService {
 
     public static void addNewUser(RegisterContainer reg) {
         /// de terminat de facut inregistrarea cu o procedura
-        String statement = "insert ignore into users (username, password, cnp, nume, prenume, adresa, numar_de_telefon) values ('cerqwerq' , 'c' , '6211217044662' , 'George' , 'Dumitru' , 'In deal' , '4673676674');";
+        String statement = "insert ignore into users (username, password, cnp, nume, prenume, adresa, numar_de_telefon) values " +
+                "(? , ? , ? , ? , ? , ? , ?);";
         try {
             PreparedStatement add = Main.c.prepareStatement(statement);
+            add.setString(1 , reg.username);
+            add.setString(2 , reg.password);
+            add.setString(3 , reg.cnp);
+            add.setString(4 , reg.nume);
+            add.setString(5 , reg.prenume);
+            add.setString(6 , reg.adresa);
+            add.setString(7 , reg.telefon);
             add.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,6 +106,18 @@ public class AppService {
 
         DefaultTableModel model = new DefaultTableModel(data , cols);
         return model;
+    }
+
+    public static void executeUpdate(CallableStatement stmt) {
+        try {
+            stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateTableString(String tabel , String coloana , String value) {
+
     }
 }
 
