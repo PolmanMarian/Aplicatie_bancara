@@ -1,15 +1,16 @@
 package Containers;
 
 public class RegisterContainer {
-    String nume , prenume , username , password , adresa, telefon;
+    public String nume , prenume , username , password , adresa, telefon , cnp;
 
-    public RegisterContainer(String nume, String prenume, String username, String password, String adresa, String telefon) {
+    public RegisterContainer(String nume, String prenume, String username, String password, String adresa, String telefon , String cnp) {
         this.nume = nume;
         this.prenume = prenume;
         this.username = username;
         this.password = password;
         this.adresa = adresa;
         this.telefon = telefon;
+        this.cnp = cnp;
     }
 
     @Override
@@ -21,8 +22,10 @@ public class RegisterContainer {
                 ", password='" + password + '\'' +
                 ", adresa='" + adresa + '\'' +
                 ", telefon='" + telefon + '\'' +
+                ", cnp='" + cnp + '\'' +
                 '}';
     }
+
     public void print() {
         System.out.println(toString());
     }

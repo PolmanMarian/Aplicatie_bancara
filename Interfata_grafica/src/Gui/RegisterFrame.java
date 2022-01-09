@@ -12,11 +12,11 @@ public class RegisterFrame extends JFrame {
     private JTextField password;
     private JTextField adresa;
     private JTextField telefon;
-    private JTextArea textArea1;
     private JButton backButton;
     private JCheckBox terms;
     private JButton submitButton;
     private JButton resetButton;
+    private JTextField cenepe;
 
     RegisterFrame (String title) {
         super.setTitle(title);
@@ -24,16 +24,14 @@ public class RegisterFrame extends JFrame {
         this.setContentPane(panel1);
         this.pack();
 
-        textArea1.setLineWrap(true);
-        textArea1.setEditable(false);
-        
         submitButton.addActionListener(e -> {
             if (nume.getText().equals("") ||
                 prenume.getText().equals("") ||
                 username.getText().equals("") ||
                 password.getText().equals("") ||
                 adresa.getText().equals("") ||
-                telefon.getText().equals("")) {
+                telefon.getText().equals("") ||
+                cenepe.getText().equals("")) {
                 AppService.gengericPopUp(Main.currentFrame , "Toate campurile sunt obligatorii");
             }
             else
@@ -41,7 +39,7 @@ public class RegisterFrame extends JFrame {
                 RegisterContainer recordToAdd = new RegisterContainer(
                         nume.getText() , prenume.getText() ,
                         username.getText() , password.getText(),
-                        adresa.getText(), telefon.getText()
+                        adresa.getText(), telefon.getText() , cenepe.getText()
                 );
                 AppService.addNewUser(recordToAdd);
                 AppService.gengericPopUp(Main.currentFrame , "Inregistrare executat cu succes");
