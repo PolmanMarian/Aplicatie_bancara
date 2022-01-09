@@ -6,9 +6,9 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ClientFrame extends JFrame{
     private JTabbedPane tabbedPane1;
@@ -51,6 +51,7 @@ public class ClientFrame extends JFrame{
     private JButton deschidereDepozitButton;
     private JButton lichidareDepozitButton;
     private JButton updateButton;
+    private JComboBox favorite;
     private JTable tabelConturi;
     private JScrollPane scrollConturi;
     private JScrollPane scrollTransferuri;
@@ -65,8 +66,10 @@ public class ClientFrame extends JFrame{
     public int selectedRowInTranzactii = 0;
     public int getSelectedRowInFirme = 0;
     public int selectedDep = 0;
+    private ArrayList<String> fIbans;
+    private ArrayList<String> fNames;
 
-    public void update_conturi(JTable to_update) {
+    public JTable update_conturi(JTable to_update) {
         String SQL_2 = "CALL getAccountData(?)";
         CallableStatement to_call = null;
         try {
@@ -78,15 +81,8 @@ public class ClientFrame extends JFrame{
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return to_update;
     }
-
-//    public void update_conturi_combo() {
-//        selectiaContuluiTransferGeneric.removeAllItems();
-//        int n = accountsTable.getRowCount();
-//        for(int i = 0 ; i < n ; ++i) {
-//            selectiaContuluiTransferGeneric.addItem(accountsTable.getValueAt(i , 1).toString());
-//        }
-//    }
 
     public void update_depozite() {
         String SQL_5 = "call getDepozite(?)";
@@ -120,6 +116,26 @@ public class ClientFrame extends JFrame{
 
 
         try {
+            /// conturile favoite
+            fIbans = new ArrayList<String>();
+            fNames = new ArrayList<String>();
+            favorite.removeAllItems();
+            String SQLfavorite = "call getFavorite(?)";
+            CallableStatement stmt = Main.c.prepareCall(SQLfavorite);
+            String numeComplet = ClientService.personalData.lastName + " " + ClientService.personalData.firstName;
+//            System.out.println(numeComplet);
+            stmt.setString(1 , numeComplet);
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                String tuple = "";
+                tuple += resultSet.getString(1);
+                tuple += " " + resultSet.getString(2);
+                favorite.addItem(tuple);
+                fNames.add(resultSet.getString(1));
+                fIbans.add(resultSet.getString(2));
+                System.out.println("favorite");
+            }
+
             /// Selectia conturilor bancare
             String SQL_2 = "CALL getAccountData(?)";
             CallableStatement to_call = Main.c.prepareCall(SQL_2);
@@ -264,7 +280,7 @@ public class ClientFrame extends JFrame{
                 System.out.println("are deja 5");
                 AppService.gengericPopUp(Main.currentFrame , "NU se poat deschide un alt cont");
             }
-            this.update_conturi(accountsTable);
+            accountsTable = this.update_conturi(accountsTable);
         });
 
         lichidareContButton.addActionListener(e->{
@@ -286,7 +302,7 @@ public class ClientFrame extends JFrame{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            this.update_conturi(accountsTable);
+            accountsTable = this.update_conturi(accountsTable);
         });
 
         tabelConturi.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -411,7 +427,7 @@ public class ClientFrame extends JFrame{
                 ex.printStackTrace();
             }
             this.update_depozite();
-            this.update_conturi(tabelConturi);
+            tabelConturi = this.update_conturi(tabelConturi);
         });
 
         clearButton.addActionListener(e -> {
@@ -422,7 +438,8 @@ public class ClientFrame extends JFrame{
         });
 
         selectiaContuluiTransferGeneric.addActionListener(e -> {
-            selectedAccount.setText(Objects.requireNonNull(selectiaContuluiTransferGeneric.getSelectedItem()).toString());
+            if(selectiaContuluiTransferGeneric != null)
+                selectedAccount.setText((String)selectiaContuluiTransferGeneric.getSelectedItem());
         });
 
         sendButton1.addActionListener(e -> {
@@ -456,9 +473,27 @@ public class ClientFrame extends JFrame{
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            accountsTable = this.update_conturi(accountsTable);
+            tabelConturi = this.update_conturi(tabelConturi);
+
+            fIbans = new ArrayList<String>();
+            try {
+                CallableStatement stmt = Main.c.prepareCall("call getFavorite(?)");
+                stmt.setString( 1 ,ClientService.personalData.lastName + " " + ClientService.personalData.firstName);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    fIbans.add(rs.getString(1) + " " + rs.getString(2));
+                }
+                for(var it : fIbans) {
+                    System.out.println(it);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
 
         updateButton.addActionListener(e -> {
+            selectedAccount.setText("");
             final int n = tabelConturi.getRowCount();
             String[] helper = new String[n];
             System.out.println(n);
@@ -470,5 +505,11 @@ public class ClientFrame extends JFrame{
                 selectiaContuluiTransferGeneric.addItem(helper[i]);
             }
         });
+
+        favorite.addActionListener(e -> {
+            toSendIban.setText(fIbans.get(favorite.getSelectedIndex()));
+            toSendName.setText(fNames.get(favorite.getSelectedIndex()));
+        });
     }
+
 }

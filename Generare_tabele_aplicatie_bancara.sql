@@ -115,12 +115,14 @@ value
 
 -- tabela angajatilor
 -- ----------------------------------------
+drop table if exists `angajat`;
 create table if not exists `angajat` (
     `norma` integer not null , -- numarul de ore de lucru pe zi
     `salariul` integer not null, -- salariul pe o luna
     `sucursala` integer ,
     `departament` integer , -- departamentul la care este asociat
     `cnp` char(13) not null unique primary key ,
+    `iban_salariu` varchar(40) not null ,
     constraint fk_departament_angajat foreign key (`departament`) references nume_departamente(`id`) on delete cascade ,
     constraint fk_cnp_angajati foreign key (`cnp`) references users(`cnp`) on delete cascade
 );
@@ -199,3 +201,24 @@ insert into `taxe_comisioane` (descriere, procentaj) values
 ('Prag' , 500000),
 ('Transfer alta banca' , 1);
 -- ----------------------------------------
+
+
+drop table if exists `departament`;
+drop table permisiuni_departament;
+
+
+alter table `nume_departamente` add column `activitati_bancare` integer;
+alter table nume_departamente add column `modificare_baza_de_date` integer;
+alter table nume_departamente add column `activitati_legate_de_utilizatori` integer;
+
+update `nume_departamente`
+    set `activitati_bancare`=0,`modificare_baza_de_date`=0,`activitati_legate_de_utilizatori`=1
+where id=1;
+
+update nume_departamente
+    set activitati_bancare=0,modificare_baza_de_date=1,activitati_legate_de_utilizatori=0
+where id=2;
+
+update nume_departamente
+    set activitati_bancare=1,modificare_baza_de_date=0,activitati_legate_de_utilizatori=2
+where id = 3;
